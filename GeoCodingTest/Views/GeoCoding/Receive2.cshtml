@@ -1,0 +1,314 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<form id="form1" runat="server">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var optionsRadios1;
+        var remark;
+        var name;
+        var code;
+        let arr = [];
+        var dateback;
+        var bank;
+        var branch;
+        var chequeno;
+        var chequedate;
+        var totalrev;
+        var dateback;
+        var receivedate;
+
+        function getLocation() {
+
+            //arr = @Html.Raw(Json.Encode(@HttpContext.Current.Session["arr2"]));;
+
+            var table = document.getElementById('odgvData');
+            for (var r = 1; r < table.rows.length-1; r++) {
+                arr.push(table.rows[r].cells[0].innerHTML);
+            }
+
+            name = document.getElementById("Name").innerText;
+            code = document.getElementById("Code").innerText;
+            remark = document.getElementById("Remark").value;
+            optionsRadios1 = $('input[name="optionsRadios1"]:checked').val(); //get value from radio button
+            bank = document.getElementById("Bank").value;
+            branch = document.getElementById("Branch").value;
+            chequeno = document.getElementById("ChequeNo").value;
+            totalrev = document.getElementById("TotalRev").value;
+            dateback = document.getElementById("CreatedOn").value;
+            chequedate = document.getElementById("ChequeDate").value;
+            receivedate = document.getElementById("Receivedate").value;
+
+            var message1 = "ยืนยันการบันทึก?";
+            var r = confirm(message1);
+
+            if (r == true) {
+                if (name != "" && optionsRadios1 != null) {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition,showError);
+                    }
+                    else { alert("Geolocation is not supported by this browser."); }
+                }
+                else {
+                    alert("ตัวเลือกห้ามว่าง!!");
+                }
+            }
+            else {
+
+            }           
+        }
+
+        function showPosition(position) {
+
+            $.ajax({
+                url: '@Url.Action("getReceive","GeoCoding")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+                    location: "Latitude: " + position.coords.latitude +
+                        ",Longitude: " + position.coords.longitude + ",Accuracy:" + position.coords.accuracy + ","
+                        + name + "," + code + "," + optionsRadios1 + "," + arr ,
+                    Dateback: dateback,
+                    Remark: remark,
+                    Bank: bank + ',' + branch + ',' + chequeno,
+                    TotalRev: totalrev,
+                    ChequeDate: chequedate,
+                    Receivedate: receivedate
+                }),
+                contentType: 'application/json',
+                //error: function (jqXHR, textStatus, errorThrown) {
+                //    if (jqXHR.status == 500) {
+                //        alert('Internal error: ' + jqXHR.responseText);
+                //    } else {
+                //        alert('Unexpected error.');
+                //    }
+                //}
+                complete: function () {
+                    //alert('Success!');
+                    window.location.href = '/Home/Index/';
+                }
+            });         
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+
+        function yesnoCheck() {
+            if (document.getElementById('optionsRadios2').checked) {
+                document.getElementById('ifMoney').style.display = 'block';
+                document.getElementById('ifOther').style.display = 'none';
+            }
+            else if (document.getElementById('optionsRadios3').checked) {
+                document.getElementById('ifMoney').style.display = 'block';
+                document.getElementById('ifOther').style.display = 'none';
+            }
+            else if (document.getElementById('optionsRadios4').checked) {
+                document.getElementById('ifMoney').style.display = 'none';
+                document.getElementById('ifOther').style.display = 'block';
+            }
+            else {
+                document.getElementById('ifMoney').style.display = 'none';
+                document.getElementById('ifOther').style.display = 'none';
+            }
+
+        }
+
+        function back() {
+            window.history.back();
+        }
+
+    </script>
+</form>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-6">
+
+            @{ 
+                string y = null;
+                var e = y;
+            }
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">ใบเก็บเงิน</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                {
+                    <div class="box-body table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row" align="center">
+                                    <th align="center">เลขที่บิล</th>
+                                    <th align="center">ชื่อลูกค้า</th>
+                                    <th align="center">วันที่</th>
+                                    <th align="center">ยอดรวม(บาท)</th>
+                                    <th style="display:none" id="Name">@Session["Name"]</th>
+                                    <th style="display:none" id="Code">@Session["Code"]</th>
+                                    <th align="center">เลขใบวางบิล</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                                {
+                                    decimal d=0;
+                                    string g ;
+
+                                    foreach (var oItem in Model.ListOINV)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            decimal a = oItem.Total ?? 0;
+                                            var b = string.Format("{0:n}", Math.Round(a, 2));
+                                            g = oItem.Refno;
+
+                                            string c = oItem.DocDate.Value.ToString("dd/MM/yyyy");
+                                            d += a;
+
+                                <tr>
+                                    <td align="center">@oItem.DocNum</td>
+                                    <td align="center">@oItem.CardName</td>
+                                    <td>@c</td>
+                                    <td align="right">@b</td>
+                                    <td style="display:none">@Session["Name"].ToString()</td>
+                                    <td style="display:none">@Session["Code"].ToString()</td>
+                                    <td align="right">@oItem.Refno</td>
+                                </tr>
+                                        }
+                                    }
+
+                                    e = string.Format("{0:n}", Math.Round(d, 2));
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>ยอดรวม</th>
+                                        <th class="text-right">@e</th>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                    <div class="box-footer">
+                        <div class="form-group col-sm-12">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios1" value="1" onclick="javascript:yesnoCheck();">
+                                    เงินสด
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios2" value="2" onclick="javascript:yesnoCheck();">
+                                    เช็ค
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios3" value="3" onclick="javascript:yesnoCheck();">
+                                    โอนเงิน
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios4" value="4" onclick="javascript:yesnoCheck();">
+                                    บิลไม่ครบ
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios5" value="5" onclick="javascript:yesnoCheck();">
+                                    อื่นๆ ระบุ
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" id="ifMoney" style="display:none">
+                            <div>
+                                <label>ธนาคาร :</label>
+                                <select id="Bank" class="form-control">
+                                    <option>-</option>
+                                    <option value="KBANK">กสิกรไทย</option>
+                                    <option value="SCB">ไทยพาณิชย์</option>
+                                    <option value="BBL">กรุงเทพ</option>
+                                    <option value="TMB">ทีเอ็มบี</option>
+                                    <option value="BAY">กรุงศรีอยุธยา</option>
+                                    <option value="CITI">ซิตี้แบงก์</option>
+                                    <option value="GSB">ออมสิน</option>
+                                    <option value="KTB">กรุงไทย</option>
+                                    <option value="TBANK">ธนชาต</option>
+                                    <option value="HSBC">ธนาคารฮ่องกงและเซี้ยงไฮ้ (HSBC)</option>
+                                    <option value="UOB">ยูโอบี (UOB)</option>
+                                    <option value="BOA">แบงก์ออฟอเมริกา (BOA)</option>
+                                    <option value="CIMB">ธนาคารซีไอเอ็มบีไทย (CIMB)</option>
+                                    <option value="SCBT">ธนาคารสแตนดาร์ดชาร์เตอร์ด (SCBT)</option>
+                                    <option value="TTB">ธนาคารทีเอ็มบีธนชาต (TTB)</option>
+                                    <option value="Other Bank">ธนาคารอื่น</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>สาขา:</label>
+                                <input type="text" class="form-control" id="Branch" placeholder="สาขา..">
+                            </div>
+                            <div>
+                                <label>เลขที่เช็ค:</label>
+                                <input type="text" class="form-control" id="ChequeNo" placeholder="เลขที่เช็ค..">
+                            </div>
+                            <div>
+                                <label>วันที่เช็ค:</label>
+                                <input type="date" class="form-control" id="ChequeDate">
+                            </div>
+                            <div>
+                                <label>จำนวนเงิน:</label>
+                                <input type="text" class="form-control" id="TotalRev" value="@e.Replace(",","")" placeholder="จำนวนเงิน..">
+                            </div>
+                        </div>
+                        <div class="col-sm-12" id="ifOther" style="display:none">
+                            <div>
+                                <label>มาอีกครั้งวันที่ :</label>
+                                <input type="date" class="form-control" id="CreatedOn">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <br />
+                            <label>วันที่คืน :</label>
+                            <input type="date" class="form-control" id="Receivedate">
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <br />
+                            <label>หมายเหตุ</label>
+                            <textarea class="form-control" name="remark" id="Remark" rows="5" placeholder="หมายเหตุ..."></textarea>
+                        </div>
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-info " onclick="back();">ย้อนกลับ</button>
+                            <button type="submit" class="btn btn-info " onclick="getLocation();">บันทึก</button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</body>

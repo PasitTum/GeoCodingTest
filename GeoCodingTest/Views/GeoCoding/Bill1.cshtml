@@ -1,0 +1,249 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<form id="form1" runat="server">
+    <div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var cardcode;
+        var cardname;
+        var invno;
+        var datebill;
+        var datebill1
+        var total;
+        var duedatebill;
+        var duedatebill1;
+        var name;
+        var code;
+
+        function getLocation() {
+
+            //name = document.getElementById("inputname").value;
+            cardcode = document.getElementById("cardcode").innerText;
+            cardname = document.getElementById("cardname").innerText;
+            invno = document.getElementById("invno").innerText;
+            datebill = document.getElementById("datebill").innerText;
+            datebill1 = datebill.toString("dd/MM/yyyy");
+            total = document.getElementById("total").innerText;
+            duedatebill = document.getElementById("duedatebill").innerText;
+            duedatebill1 = duedatebill.toString("dd/MM/yyyy");
+            name = document.getElementById("name").innerText;
+            code = document.getElementById("code").innerText;
+            typeid = document.getElementById("typeid").innerText;
+
+
+
+            if (name != "") {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition,showError);
+                }
+                else { alert("Geolocation is not supported by this browser."); }
+            }
+            else {
+                alert("text not empty");
+            }
+        }
+
+        function showPosition(position) {
+
+            $.ajax({
+                url: '@Url.Action("getLocation","GeoCoding")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+
+                    location: "Latitude: " + position.coords.latitude +
+                        ",Longitude: " + position.coords.longitude + ",Accuracy:" + position.coords.accuracy + ","
+                        + cardcode + "," + cardname + "," + invno + "," + datebill + "," + total
+                        + "," + duedatebill + "," + name + "," + code + "," + typeid
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    alert('Success!');
+                }
+            });
+
+            window.location.href = '/Home/Index/';
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+
+            window.location.href = '/GeoCoding/Bill1/';
+        }
+
+    </script>
+</form>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">ใบเก็บเงิน</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+
+                    @using (Html.BeginForm("Bill1"
+                                , "GeoCoding"
+                                , FormMethod.Post
+                                , new { id = "oForm" }))
+                    {
+                        <div class="form-group">
+                            <label for="inputEmail3">Invoice Number</label>
+                            <input type="text" name="invoiceno" class="form-control" id="inputname" placeholder="">
+                        </div>
+                        <button type="submit" class="btn btn-info ">ค้นหา</button>
+                    }
+                </div>
+                <div class="box-footer">
+
+                    <div class="widget-content col-sm-6">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>หัวข้อ</th>
+                                    <th>รายละเอียด</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListOINV)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            <tr>
+                                                <th>รหัสลูกค้า</th>
+                                                <td id="cardcode">@oItem.CardCode</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ชื่อลูกค้า</th>
+                                                <td id="cardname">@oItem.CardName</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ใบส่งของ</th>
+                                                <td id="invno">@oItem.InvNo</td>
+                                            </tr>
+                                            <tr>
+                                                <th>วันที่บิล (เดือน/วัน/ปี)</th>
+                                                <td id="datebill">@oItem.DateBill</td>
+                                            </tr>
+                                            <tr>
+                                                <th>จำนวนเงิน</th>
+                                                <td id="total">@oItem.Total</td>
+                                            </tr>
+                                            <tr>
+                                                <th>วันที่มอบหมายงาน (เดือน/วัน/ปี)</th>
+                                                <td id="duedatebill">@oItem.DueDateBill</td>
+                                            </tr>
+                                            <tr style="display:none;">
+                                                <td id="name" style="display:none;">@Session["Name"].ToString()</td>
+                                            </tr>
+                                            <tr style="display:none;">
+                                                <td id="code" style="display:none;">@Session["Code"].ToString()</td>
+                                            </tr>
+                                            <tr style="display:none;">
+                                                <td id="typeid" style="display:none;">@Session["TypeID"].ToString()</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a class="btn btn-info" onclick="getLocation();">บันทึก </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+    @*Gridview*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#odgvData').DataTable({
+                'paging': false,
+                'lengthChange': false,
+                'searching': false,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                },
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                var tPage = this.search;
+
+                if (tPage == "")
+                    return false;
+
+                tPage = tPage.replace("?", "");
+                tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+
+                //var radioValue = $("input[name='XVScanType']:checked").val();
+                //pmdoData = {
+                //    XVScanType: radioValue,
+                //    XVSearch: $("#XVSearch").val(),
+                //}
+
+                //$.ajax({
+                //    url: this.href,
+                //    type: 'POST',
+                //    data: pmdoData,
+                //    cache: false,
+                //    async: true,
+                //    error: function (jqXHR, error, errorThrown) {
+                //        //display error
+                //    },
+                //    success: function (data, textStatus, jqXHR) {
+                //        $("body").html(data);
+                //    }
+                //});
+                return false;
+            });
+
+        });
+
+    </script>
+}

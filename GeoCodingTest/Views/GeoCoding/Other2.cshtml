@@ -1,0 +1,223 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<form id="form1" runat="server">
+    <div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var optionsRadios1;
+        var remark;
+        var name;
+        var code;
+        var invno;
+        var cardcode;
+        var cardname;
+        var address;
+        var docdate;
+        var docduedate;
+        var total;
+        var total2;
+
+        function getLocation() {
+
+            name = document.getElementById("Name").innerText;
+            code = document.getElementById("Code").innerText;
+            invno = document.getElementById("InvNo").innerText;
+            remark = document.getElementById("Remark").value;
+            optionsRadios1 = $('input[name="optionsRadios1"]:checked').val(); //get value from radio button
+            cardcode = document.getElementById("CardCode").innerText;
+            cardname = document.getElementById("CardName").innerText;
+            address = document.getElementById("Address").innerText;
+            docdate = document.getElementById("DocDate").innerText;
+            docduedate = document.getElementById("DocDueDate").innerText;
+            total = document.getElementById("Total").innerText;
+            total2 = total.replace(',', ''); //
+
+            //alert(optionsRadios1);
+            //cardcode = document.getElementById("cardcode").innerText;
+            //cardname = document.getElementById("cardname").innerText;
+            //invno = document.getElementById("invno").innerText;
+            //datebill = document.getElementById("datebill").innerText;
+            //datebill1 = datebill.toString("dd/MM/yyyy");
+            //total = document.getElementById("total").innerText;
+            //duedatebill = document.getElementById("duedatebill").innerText;
+            //duedatebill1 = duedatebill.toString("dd/MM/yyyy");
+            //name = document.getElementById("name").innerText;
+            //code = document.getElementById("code").innerText;
+            //typeid = document.getElementById("typeid").innerText;
+
+            var message1 = "ยืนยันการบันทึก?";
+            var r = confirm(message1);
+
+            if (r == true) {
+                if (name != "" && optionsRadios1 != null) {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition, showError);
+                    }
+                    else { alert("Geolocation is not supported by this browser."); }
+                }
+                else {
+                    alert("ตัวเลือกห้ามว่าง!!");
+                }
+            }
+            else {
+
+            }            
+        }
+
+        function showPosition(position) {
+
+            $.ajax({
+                url: '@Url.Action("getOther2","GeoCoding")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+
+                    location: "Latitude: " + position.coords.latitude +
+                        ",Longitude: " + position.coords.longitude + ",Accuracy:" + position.coords.accuracy + ","
+                        + name + ","+ code +"," + invno + "," + optionsRadios1 + "," + cardcode + "," + cardname
+                        + "," + address + "," + total2
+                    , DocDate1: docdate, DocDueDate1: docduedate,
+                    Remark: remark
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    //alert('Success!');
+                    window.location.href = '/Home/Index/';
+                }
+            });       
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+
+        function back() {
+            window.history.back();
+        }
+
+    </script>
+</form>
+
+<div class="row">
+    <div class="col-sm-6">
+
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">อื่นๆ</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="box-body">
+                
+                @{ 
+                    decimal a = Model.ListOINV[0].Total ?? 0;
+                    var b = string.Format("{0:n}", Math.Round(a, 2));
+
+                    string c = Model.ListOINV[0].DocDate.Value.ToString("dd/MM/yyyy");
+                    string d = Model.ListOINV[0].DocDueDate.Value.ToString("dd/MM/yyyy");
+                }
+
+                <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                    <tbody>
+                        <tr>
+                            <th>เลขที่บิล</th>
+                            <td id="InvNo">@Model.ListOINV[0].DocNum</td>
+                        </tr>
+                        <tr>
+                            <th>รหัสลูกค้า</th>
+                            <td id="FatherCode">@Model.ListOINV[0].FatherCard</td>
+                        </tr>
+                        <tr>
+                            <th>รหัสลูกค้า</th>
+                            <td id="CardCode">@Model.ListOINV[0].CardCode</td>
+                        </tr>
+                        <tr>
+                            <th>ชื่อลูกค้า</th>
+                            <td id="CardName">@Model.ListOINV[0].CardName</td>
+                        </tr>
+                        <tr>
+                            <th>ที่อยู่ลูกค้า</th>
+                            <td id="Address">@Model.ListOINV[0].Address</td>
+                        </tr>
+                        <tr>
+                            <th>วันที่ออกบิล</th>
+                            <td>@c</td>
+                        </tr>
+                        <tr style="display:none">
+                            <th>วันที่ออกบิล</th>
+                            <td id="DocDate">@Model.ListOINV[0].DocDate</td>
+                        </tr>
+                        <tr>
+                            <th>วันที่มอบหมายงาน</th>
+                            <td>@d</td>
+                        </tr>
+                        <tr style="display:none">
+                            <th>วันที่มอบหมายงาน</th>
+                            <td id="DocDueDate">@Model.ListOINV[0].DocDueDate</td>
+                        </tr>
+                        <tr>
+                            <th>จำนวนเงิน (บาท)</th>
+                            <td id="Total">@b</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none" id="Name">@Session["Name"].ToString()</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none" id="Code">@Session["Code"].ToString()</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <br />
+            </div>
+            <div class="box-footer">
+                <div class="form-group">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios1" id="optionsRadios1" value="1">
+                            เปลี่ยนบิล / เซ็นบิล
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios1" id="optionsRadios1" value="2">
+                            รับบิล / รับใบเสร็จ / รับใบหัก ณ ที่จ่าย
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios1" id="optionsRadios1" value="3">
+                            อื่นๆ ระบุ
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>หมายเหตุ</label>
+                    <textarea class="form-control" name="remark" id="Remark" rows="5" placeholder="หมายเหตุ..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-info " onclick="back();">ย้อนกลับ</button>
+                <button type="submit" class="btn btn-info " onclick="getLocation();">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>

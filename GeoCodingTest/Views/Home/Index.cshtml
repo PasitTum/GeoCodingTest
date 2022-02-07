@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+
+@Html.Raw(TempData["msg"])
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .btn {
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+            /* Darker background on mouse-over */
+            .btn:hover {
+                background-color: RoyalBlue;
+            }
+    </style>
+</head>
+<body>
+    <div class="col-md-12">
+
+        <h2>Winner Group Enterprise </h2>
+
+        @if (Session["Name"] != null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "9"))
+        {
+
+            <br />
+            <a href="~/GeoCoding/Billing"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i> วางบิล</div></a>
+            <br>
+            <br />
+            <a href="~/GeoCoding/Receive"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i> เก็บเงิน</div></a>
+            <br>
+            <br />
+            <a href="~/GeoCoding/CN"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i> CN</div></a>
+            <br>
+            <br />
+            <a href="~/GeoCoding/Other"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i> อื่นๆ</div></a>
+            <br>
+            <br />
+            <a href="~/GeoCoding/Online"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i> Online </div></a>
+            <br>
+            <br />
+            <a href="~/GeoCoding/Delivery"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i> รับส่งเอกสาร</div></a>
+            <br>
+
+        }
+
+        <br />
+        <a href="~/GeoCoding/WorkOrder"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i> งานทั่วไป</div></a>
+        <br>
+        <br />
+        <a href="~/GeoCoding/WorkList"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i>รายการงานทั่วไป</div></a>
+        <br />
+        <br />
+        <a href="~/GeoCoding/WorkOrderPostel"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i>งานไปรษณีย์</div></a>
+        <br>
+        <br />
+        <a href="~/GeoCoding/WorkListPostel"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i>รายการงานไปรษณีย์</div></a>
+        <br>
+        @if (Session["Name"] != null && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10"))
+        {
+            <br />
+            <a href="~/GeoCoding/PostelAdmin"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i>บันทึกรายการจัดส่ง</div></a>
+            <br>
+            <br />
+            <a href="~/CR/PostelReport"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i>ไปรษณีย์ประจำเดือน</div></a>
+            <br>
+            <br />
+            <a href="~/CR/PostelReportDaily"><div class="btn" style="width:240px;"><i class="fa fa-clipboard"></i>สรุปรายงานไปรษณีย์</div></a>
+
+        }
+    </div>
+</body>
+</html>

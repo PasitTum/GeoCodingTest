@@ -1,0 +1,174 @@
+﻿<form id="form1" runat="server">
+    <div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var optionsRadios1;
+        var remark;
+        var name;
+        var code;
+        var bank;
+
+        function getLocation() {
+
+            code = document.getElementById("Code").innerText;
+            name = document.getElementById("Name").innerText;
+            remark = document.getElementById("Remark").value;
+            optionsRadios1 = $('input[name="optionsRadios1"]:checked').val(); //get value from radio button
+            bank = document.getElementById("Bank").value;
+
+            var message1 = "ยืนยันการบันทึก?";
+            var r = confirm(message1);
+
+            if (r == true) {
+                if (name != "" && optionsRadios1 != null) {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition, showError);
+                    }
+                    else { alert("Geolocation is not supported by this browser."); }
+                }
+                else {
+                    alert("ตัวเลือกห้ามว่าง!!");
+                }
+            }
+            else {
+
+            }           
+        }
+
+        function showPosition(position) {
+
+            $.ajax({
+                url: '@Url.Action("getDelivery","GeoCoding")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+
+                    location: "Latitude: " + position.coords.latitude +
+                        ",Longitude: " + position.coords.longitude + ",Accuracy:" + position.coords.accuracy + ","
+                        + name + "," + code + "," + optionsRadios1,
+                    Remark: remark,
+                    Bank: bank
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    //alert('Success!');
+                    window.location.href = '/Home/Index/';
+                }
+            });
+            
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+
+            window.location.href = '/GeoCoding/Other/';
+        }
+
+        function yesnoCheck() {
+            if (document.getElementById('optionsRadios1').checked) {
+                document.getElementById('ifMoney').style.display = 'block';
+            }
+            else {
+                document.getElementById('ifMoney').style.display = 'none';
+            }
+
+        }
+
+    </script>
+</form>
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">รับส่งเอกสาร</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="box-body">
+                <div class="form-group">
+                    <span style="display:none" id="Name">@Session["Name"].ToString()</span>
+                    <span style="display:none" id="Code">@Session["Code"].ToString()</span>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios1" id="optionsRadios1" value="1" onclick="javascript:yesnoCheck();">
+                            เข้าเช็ค
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios1" id="optionsRadios2" value="2" onclick="javascript:yesnoCheck();">
+                            ส่งไปรษณีย์
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios1" id="optionsRadios3" value="3" onclick="javascript:yesnoCheck();">
+                            ส่งเอกสาร
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios1" id="optionsRadios4" value="4" onclick="javascript:yesnoCheck();">
+                            อื่นๆ ระบุ
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-12" id="ifMoney" style="display:none">
+                    <div>
+                        <label>ธนาคาร :</label>
+                        <select id="Bank" class="form-control">
+                            <option>-</option>
+                            <option value="KBANK">กสิกรไทย</option>
+                            <option value="SCB">ไทยพาณิชย์</option>
+                            <option value="BBL">กรุงเทพ</option>
+                            <option value="TMB">ทีเอ็มบี</option>
+                            <option value="BAY">กรุงศรีอยุธยา</option>
+                            <option value="CITI">ซิตี้แบงก์</option>
+                            <option value="GSB">ออมสิน</option>
+                            <option value="KTB">กรุงไทย</option>
+                            <option value="TBANK">ธนชาต</option>
+                            <option value="HSBC">ธนาคารฮ่องกงและเซี้ยงไฮ้ (HSBC)</option>
+                            <option value="UOB">ยูโอบี (UOB)</option>
+                            <option value="BOA">แบงก์ออฟอเมริกา (BOA)</option>
+                            <option value="CIMB">ธนาคารซีไอเอ็มบีไทย (CIMB)</option>
+                            <option value="SCBT">ธนาคารสแตนดาร์ดชาร์เตอร์ด (SCBT)</option>
+                            <option value="TTB">ธนาคารทีเอ็มบีธนชาต (TTB)</option>
+                            <option value="Other Bank">ธนาคารอื่น</option>
+                        </select>
+                    </div><br />
+                </div>
+                <div class="form-group col-sm-12">
+                    <label>หมายเหตุ</label>
+                    <textarea class="form-control" name="Remark" id="Remark" rows="5" placeholder="หมายเหตุ..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-info " onclick="getLocation();">บันทึก</button>
+            </div>            
+            <div class="box-footer">
+
+
+            </div>
+        </div>
+    </div>
+</div>

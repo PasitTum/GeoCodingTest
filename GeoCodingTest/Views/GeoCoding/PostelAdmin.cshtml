@@ -1,0 +1,470 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+@Html.Raw(TempData["msg"])
+
+<form id="form1" runat="server">
+    <div>
+    </div>
+
+    @section scripts{
+
+        <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+
+        @*Gridview*@
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" language="javascript">
+
+            
+            
+            $(document).keydown(function (e) {
+                if (e.keyCode == 17) {
+                    var index = $('.itemcode').index(document.activeElement) - 1;
+                    $('.itemcode').eq(index).focus();
+                    // Do something here if the popup is open
+                    //alert("dd")
+
+
+                }
+            });
+            $(window).ready(function () {
+                $("#form1").on("keypress", function (event) {
+                    console.log("aaya");
+                    var keyPressed = event.keyCode || event.which;
+                    if (keyPressed === 13) {
+                        var index = $('.itemcode').index(document.activeElement) + 1;
+                        $('.itemcode').eq(index).focus();
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+            });
+
+            let i = 1;
+            let z = 0;
+
+
+            
+
+            document.getElementById("demo").innerHTML = length;
+
+            function addRow(x,y) {
+
+                if (z == 0 && x != null && x != 'undefined') {
+                    i = x;
+                    z = z + 1;
+                }
+                if (y == 'ems') {
+
+                    var test = '<tr>'
+                        + '<td><select class="form-control" name="BP[' + i + '].Type" id=""><option value="" selected="selected"> --เลือก --</option><option value="ems">EMS</option><option value="emsar">EMS – AR (ตอบรับ)</option></select></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" ></td>'
+                        + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + ']" class="form-control" id="" value="" hidden></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + '].ID" class="form-control" value="" maxlength="20"  id="" "></td>'
+                    $("#odgvData").append(test);
+
+                    i = i + 1;
+                }
+                else if (y == 'normal') {
+                    var test = '<tr>'
+                        + '<td><select class="form-control" name="BP[' + i + '].Type" id=""><option value="normal" selected="selected">ธรรมดา</option></select></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" ></td>'
+                        + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + '].WorkOrder_ID" class="form-control" id="" value="" hidden></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + '].ID" class="form-control" value="" maxlength="20"  id="" "></td>'
+                    $("#odgvData").append(test);
+
+                    i = i + 1;
+                }
+                else if (y == 'register') {
+                    var test = '<tr>'
+                        + '<td ><select class="form-control " name="BP[' + i + '].Type" id="" style="display:none"><option value="register" selected="selected">ลงทะเบียน</option></select></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" ></td>'
+                        + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + '].WorkOrder_ID" class="form-control" id="" value="" hidden></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + '].ID" class="form-control" value="" maxlength="20"  id="" "></td>'
+                    $("#odgvData").append(test);
+
+                    i = i + 1;
+                }
+                else {
+                    var test = '<tr>'
+                        + '<td disable><select class="form-control" name="BP[' + i + '].Type" id="" ><option value="" selected="selected"> --เลือก --</option><option value="normal" >ธรรมดา</option><option value="register"  >ลงทะเบียน</option><option value="ems">EMS</option><option value="emsar">EMS – AR (ตอบรับ)</option></select></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                        + '<td><input type="number" name="BP[' + i + '].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" ></td>'
+                        + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + '].WorkOrder_ID" class="form-control" id="" value="" hidden></td>'
+                        + '<td style="display:none"><input type="text" name="BP[' + i + '].ID" class="form-control" value="" maxlength="20"  id="" "></td>'
+                    $("#odgvData").append(test);
+
+                    i = i + 1;
+                }
+
+            }
+            $(function () {
+                $("#sortable").sortable();
+                $("#sortable").disableSelection();
+            });
+            
+            function SomeDeleteRowFunction(btndel) {
+
+                message = "ยืนยันการลบ?"
+
+                var r = confirm(message);
+
+                if (r == true) {
+                    if (typeof (btndel) == "object") {
+
+                        //$(btndel).closest("tr").remove();
+
+                        //var a = $(btndel).closest("tr")[0].children[1].children[0].defaultValue;
+
+                        //var b = $(btndel).closest("tr")[0];
+
+                        //alert(a);
+
+                        $(btndel).closest("tr").hide();
+                        $(btndel).closest("tr")[0].children[1].children[0].defaultValue = "";
+
+                    } else {
+                        return false;
+                    }
+                }
+                else {
+
+                }
+
+            }
+            
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode >= 48 && charCode <= 57)) {
+                    return true;
+                }
+                return false;
+            }
+
+            function trclick() {
+                console.log('tr clicked')
+            };
+
+            function tdclick(e) {
+                if (!e) var e = window.event;                // Get the window event
+                e.cancelBubble = true;                       // IE Stop propagation
+                if (e.stopPropagation) e.stopPropagation();  // Other Broswers
+                console.log('td clicked');
+            };
+
+            function editclick(x) {
+
+
+                if (x == 'N') {
+
+                    var x = document.getElementsByClassName('name');
+                    var i;
+
+                    for (i = 0; i < x.length; i++) {
+                        x[i].disabled = false;
+                    }
+
+                }
+            }
+        </script>
+    }
+
+</form>
+
+<body onload="onload();" id="form1">
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="nav-tabs-custom">
+                <div class="nav nav-tabs">
+                    <h3 class="box-title">งานไปรษณีย์หน้าจัดการ ( Admin ) </h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+
+                    @using (Html.BeginForm("PostelAdmin"
+                                            , "GeoCoding"
+                                            , FormMethod.Post
+                                            , new { id = "oForm" }))
+                    {
+                    <div class="form-group col-sm-12 col-md-16">
+                        <label class="col-sm-12 col-md-1" style="text-align:center">ตั้งแต่วันที่</label>
+
+                        @{
+                            string datefrom = (Model.datefrom != null) ? Model.datefrom.ToString("yyyy-MM-dd") : string.Empty;
+                            string dateto = (Model.dateto != null) ? Model.dateto.ToString("yyyy-MM-dd") : string.Empty;
+                         }
+
+
+
+
+                        <div class="col-sm-12 col-md-2">
+                            <input type="date" name="datefrom" value="@datefrom" required class="form-control">
+                        </div>
+                        <label class="col-sm-12 col-md-1" style="text-align:center">ถึง</label>
+                        <div class="col-sm-12 col-md-2">
+                            <input type="date" name="dateto" value="@dateto" required class="form-control">
+                        </div>
+                        <label class="col-sm-12 col-md-1" style="text-align:center">ประเภทงาน</label>
+                        
+                        @if (Model.checkbox == "normal")
+                        {
+                            <div class="col-sm-12 col-md-3">
+                                <select class="form-control postel" name="checkbox" id="">
+                                    <option value="">-- เลือก --</option>
+                                    <option value="normal" selected="selected">ธรรมดา</option>
+                                    <option value="register">ลงทะเบียน</option>
+                                    <option value="ems">EMS&EMS – AR (ตอบรับ)</option>
+                                </select>
+                            </div>
+
+                        }
+                        else if (Model.checkbox == "register")
+                        {
+                            <div class="col-sm-12 col-md-3">
+                                <select class="form-control postel" name="checkbox" id="">
+                                    <option value="">-- เลือก --</option>
+                                    <option value="normal">ธรรมดา</option>
+                                    <option value="register" selected="selected">ลงทะเบียน</option>
+                                    <option value="ems">EMS&EMS – AR (ตอบรับ)</option>
+                                </select>
+                            </div>
+
+                        }
+                        else if (Model.checkbox == "ems")
+                        {
+                            <div class="col-sm-12 col-md-3">
+                                <select class="form-control postel" name="checkbox" id="">
+                                    <option value="">-- เลือก --</option>
+                                    <option value="normal">ธรรมดา</option>
+                                    <option value="register">ลงทะเบียน</option>
+                                    <option value="ems" selected="selected">EMS&EMS – AR (ตอบรับ)</option>
+                                </select>
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="col-sm-12 col-md-3">
+                                <select class="form-control postel" name="checkbox" id="">
+                                    <option value="" selected="selected">-- เลือก --</option>
+                                    <option value="normal">ธรรมดา</option>
+                                    <option value="register">ลงทะเบียน</option>
+                                    <option value="ems">EMS&EMS – AR (ตอบรับ)</option>
+                                </select>
+                            </div>
+                        }
+                        <div class="col-sm-12 col-md-1">
+                            <button type="submit" name="button1" id="btn1" value="search" class="btn btn-info ">ค้นหา</button>
+                        </div>
+                    </div>
+                        <div>
+
+                            <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th style="text-align:center;width:5%">ลำดับ</th>
+                                        <th style="text-align:center;width:15%">งานที่ต้องดำเนินการ</th>
+                                        <th style="text-align:center;width:30%">ชื่อบริษัท</th>
+                                        <th style="text-align:center;width:10%">รหัสไปรษณีย์</th>
+                                        <th style="text-align:center;width:18%">เลข Tracking</th>
+                                        <th style="text-align:center;width:18%">เลข EMS(ตอบรับ)</th>
+                                        <th style="display:none"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @{
+                                        int i = 0;
+                                        DateTime mtyr = DateTime.Now;
+                                        int mt = mtyr.Month;
+                                        int yr = mtyr.Year;
+                                        string m = mt + "/" + yr;
+                                        int index = 1;
+                                    }
+
+                                    @if (Model != null && Model.ListBW2 != null && Model.ListBW2.Count > 0)
+                                    {
+
+                                        foreach (var oItem in Model.ListBW2)
+                                        {
+
+                                            string type = string.Empty;
+
+                                            switch (oItem.Type)
+                                            {
+                                                case "normal":
+                                                    type = "ธรรมดา";
+                                                    break;
+                                                case "register":
+                                                    type = "ลงทะเบียน";
+                                                    break;
+                                                case "ems":
+                                                    type = "EMS";
+                                                    break;
+                                                case "emsar":
+                                                    type = "EMS – AR (ตอบรับ)";
+                                                    break;
+                                                default:
+                                                    type = "-- เลือก --";
+                                                    break;
+                                            }
+
+                                            string workorderid = "BP[" + i + "].WorkOrder_ID";
+                                            string typen = "BP[" + i + "].Type";
+                                            string namen = "BP[" + i + "].Name";
+                                            string posteln = "BP[" + i + "].Postel";
+                                            string itemcoden = "BP[" + i + "].Itemcode";
+                                            string EMSRevn = "BP[" + i + "].EMSRev";
+                                            string ID = "BP[" + i + "].ID";
+                                            string pricen = "BP[" + i + "].Price";
+                                            string Idetail = "BP[" + i + "].ps_code";
+
+                                            
+                                                
+                                           
+                                    <tr>
+                                        <td style="text-align:center">
+                                            <label >@index</label>
+                                        </td>
+                                        @if (oItem.Type == "ems" || oItem.Type == "emsar")
+                                        {
+                                            <td>
+                                                <select class="form-control postel" name="@typen" id="@typen">
+                                                    <option value="@oItem.Type" selected="selected" hidden>@type</option>
+                                                </select>
+                                            </td>
+                                        }
+                                        else if (oItem.Type == "normal" || oItem.Type == "register")
+                                        {
+                                            <td>
+                                                <select class="form-control postel" name="@typen" id="@typen">
+                                                    <option value="@oItem.Type" selected="selected" hidden>@type</option>
+                                                </select>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <select class="form-control postel" name="@typen" id="@typen">
+                                                    <option value="@oItem.Type" selected="selected" hidden>@type</option>
+                                                    <option value="" selected="selected">-- เลือก --</option>
+                                                    <option value="normal">ธรรมดา</option>
+                                                    <option value="register">ลงทะเบียน</option>
+                                                    <option value="ems">EMS</option>
+                                                    <option value="emsar">EMS – AR (ตอบรับ)</option>
+                                                </select>
+                                            </td>
+                                        }
+
+                                        <td>
+                                            <input type="text" name="@namen" id="" class="form-control" value="@oItem.Name" maxlength="100">
+                                        </td>
+                                        <td>
+                                            <input type="number" name="@posteln" id="" class="form-control postel" value="@oItem.Postel" onkeypress="if(this.value.length==5) return false;">
+                                        </td>
+
+                                        @if (oItem.Type == "normal")
+                                        {
+                                            <td>
+                                                <input type="text" name="@itemcoden" id="" style="text-transform: uppercase" class="form-control" value="@oItem.Itemcode" maxlength="20" disabled>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="@EMSRevn" id="" style="text-transform: uppercase" class="form-control" value="@oItem.EMSRev" maxlength="20" disabled>
+                                            </td>
+                                        }
+                                        else if (oItem.Type == "register" || oItem.Type == "ems")
+                                        {
+                                            <td>
+                                                <input type="text" name="@itemcoden" id="" style="text-transform: uppercase" class="form-control itemcode" onkeypress="if(this.value.length==13) return false;" pattern=".{13,}" title="กรอกเลขไม่ครบ" value="@oItem.Itemcode" maxlength="20">
+                                            </td>
+                                            <td>
+                                                <input type="text" name="@EMSRevn" id="" style="text-transform: uppercase" class="form-control " onkeypress="if(this.value.length==13) return false;"  value="@oItem.EMSRev" maxlength="20" disabled>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <input type="text" name="@itemcoden" id="" style="text-transform: uppercase" class="form-control itemcode" onkeypress="if(this.value.length==13) return false;" pattern=".{13,}" title="กรอกเลขไม่ครบ" value="@oItem.Itemcode" maxlength="20">
+                                            </td>
+                                            <td>
+                                                <input type="text" name="@EMSRevn" id="" style="text-transform: uppercase" class="form-control itemcode" onkeypress="if(this.value.length==13) return false;" pattern=".{13,}" title="กรอกเลขไม่ครบ" value="@oItem.EMSRev" maxlength="20">
+                                            </td>
+                                        }
+                                        <td align="center">
+                                            <button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button>
+                                        </td>
+                                        <td style="display:none">
+                                            <input type="text" name="@workorderid" class="form-control" id="" value="@oItem.WorkOrder_ID" hidden>
+                                        </td>
+                                        <td style="display:none">
+                                            <input type="text" name="@ID" id="" class="form-control" value="@oItem.ID" maxlength="20" hidden>
+                                        </td>
+                                        <td style="display:none">
+                                            <input type="text" name="@Idetail" id="" class="form-control" value="@oItem.ID_detail" maxlength="20" hidden>
+                                        </td>
+                                    </tr>
+                                            index++;
+                                            i++;
+                                        }
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+
+
+                        </div>
+
+
+                        <label class="col-md-1 align-self-center" style="text-align:center">รอบที่</label>
+                        <div class="col-md-1 col-sm-2">
+                            <input type="text" style="text-align:center" onKeyPress="return isNumber(event)" name="round" value="@Model.round" class="form-control" id="" maxlength="2">
+                        </div>
+                        <label class="col-md-2 " style="text-align:center">ของเดือน/ปี</label>
+                        <div class="col-sm-2">
+                            <input type="text" name="mtyr" class="form-control" id="" value="@m" readonly>
+                        </div>
+                        <div class="col-md-1">
+                            <button name="button1" value="A" type="submit" class="btn btn-info " onclick="return confirm('ยืนยันการบันทึก!')" >บันทึก</button>
+                        </div>
+
+
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</body>

@@ -1,0 +1,76 @@
+﻿<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var loadFile = function (event) {
+        var output = document.getElementById('output');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+</script>
+
+@Html.Raw(TempData["msg"])
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-6">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">แทรกแผนที่</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+
+                    @using (Html.BeginForm("getMapView"
+                                , "Map"
+                                , FormMethod.Post
+                                , new { enctype = "multipart/form-data" }))
+                    {
+
+                        <div class="form-group">
+                            <br />
+                            <img id="output" width="260" height="220" />
+                            <br /><br />
+                            <input type="file" name="file" accept="image/*" required onchange="loadFile(event)">
+                        </div>
+                        
+                        <div>
+                            <div style="display:none">
+                                <input type="text" name="id" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>รหัสลูกค้า</label>
+                                <input type="text" name="cardcode" class="form-control" id="inputname" autocomplete="off" required placeholder="รหัสลูกค้า">
+                            </div>
+                            <div class="form-group">
+                                <label>ชื่อลูกค้า</label>
+                                <input type="text" name="cardname" class="form-control" id="inputname" autocomplete="off" required placeholder="ชื่อลูกค้า">
+                            </div>
+                            <div class="form-group">
+                                <label>ที่อยู่ลูกค้า</label>
+                                <textarea class="form-control" name="address" id="Remark" rows="4" placeholder="ที่อยู่ลูกค้า"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>หมายเหตุ</label>
+                                <textarea class="form-control" name="remark" id="Remark" rows="4" placeholder="หมายเหตุ..."></textarea>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-info " name="button" value="2" onclick="return confirm('คุณต้องการบันทึก?');">บันทึก</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

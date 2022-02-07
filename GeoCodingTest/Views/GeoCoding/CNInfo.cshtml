@@ -1,0 +1,101 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<script type="text/javascript">
+    function back() {
+        window.history.back();
+    }
+</script>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-6">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">CN</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                {
+                    <div class="box-body">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>หัวข้อ</th>
+                                    <th>รายละเอียด</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListOINV)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            decimal a = oItem.Total ?? 0;
+                                            var b = string.Format("{0:n}", Math.Round(a, 2));
+
+                                            string c = oItem.DocDate.Value.ToString("dd/MM/yyyy");
+
+                                            string d = oItem.DocDueDate.Value.ToString("dd/MM/yyyy");
+
+                                            <tr>
+                                                <th>ใบส่งของ</th>
+                                                <td id="invno">@oItem.DocNum</td>
+                                            </tr>
+                                            <tr>
+                                                <th>รหัส CP</th>
+                                                <td id="fathercode">@oItem.FatherCard</td>
+                                            </tr>
+                                            <tr>
+                                                <th>รหัสลูกค้า</th>
+                                                <td id="cardcode">@oItem.CardCode</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ชื่อลูกค้า</th>
+                                                <td id="cardname">@oItem.CardName</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ที่อยู่ลูกค้า</th>
+                                                <td id="invno">@oItem.Address</td>
+                                            </tr>
+                                            <tr>
+                                                <th>วันที่บิล (เดือน/วัน/ปี)</th>
+                                                <td id="datebill">@c</td>
+                                            </tr>
+                                            <tr>
+                                                <th>จำนวนเงิน(บาท)</th>
+                                                <td id="total">@b</td>
+                                            </tr>
+                                            <tr>
+                                                <th>วันที่มอบหมายงาน (เดือน/วัน/ปี)</th>
+                                                <td id="duedatebill">@d</td>
+                                            </tr>
+                                            <tr style="display:none;">
+                                                <td id="name" style="display:none;">@Session["Name"].ToString()</td>
+                                            </tr>
+                                            <tr style="display:none;">
+                                                <td id="code" style="display:none;">@Session["Code"].ToString()</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-info " onclick="back();">ย้อนกลับ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

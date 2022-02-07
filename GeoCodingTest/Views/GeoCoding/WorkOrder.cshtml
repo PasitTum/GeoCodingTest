@@ -1,0 +1,873 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<head>
+    <style>
+
+        input,
+        select,
+        textarea {
+            max-width: 100%
+        }
+    </style>
+</head>
+
+
+@if (Model.ListBW2 != null)
+{
+    <!-- เริ่มต้นหน้าแก้ไชซึ่งใช้ View ตัวเดียวกันกับ งานทั่วไป แต่แยกประเภทของการทำงานกันจากค่า parameter ที่ส่งผ่านมา หาก ListBW2ไม่เท่ากับ Null จะเป็นการแก้ไข-->
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="box box-danger">
+
+                <div class="box-header with-border">
+                    <h3 class="box-title"><label style="font-weight:700">งานทั่วไป</label></h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @using (Html.BeginForm("getWorkOrder"
+                                           , "GeoCoding"
+                                           , FormMethod.Post
+                                           , new { enctype = "multipart/form-data" }))
+                {
+                <div class="box-body">
+
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-md-12">
+                            <label class="col-sm-12 col-md-1" style="text-align:center">ชื่อผู้สั่งงาน</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.Commander_Name" class="form-control" id="" value="@Model.ListBW2[0].Commander_Name" maxlength="50" readonly>
+                            </div>
+                            <div style="display:none">
+                                <input type="text" name="BW.ID" class="form-control" id="" value="@Model.ListBW2[0].ID" readonly>
+                            </div>
+                            <div style="display:none">
+                                <input type="text" name="BW.Commander_Code" class="form-control" id="" value="@Model.ListBW2[0].Commander_Code" readonly>
+                            </div>
+                            <label class="col-sm-12 col-md-1" style="text-align:center">หน่วยงาน</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.Commander_Department" value="@Model.ListBW2[0].Commander_Department" class="form-control" id="branch" maxlength="50" autocomplete="off" readonly>
+                            </div>
+                            <label class="col-sm-12 col-md-1" style="text-align:center">วันที่แจ้งใช้งาน</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.date" class="form-control" id="branch" value="@Model.ListBW2[0].Commander_Datetime.Value.ToString("dd/MM/yyyy")" readonly autocomplete="off">
+                            </div>
+                            <label class="col-sm-12 col-md-1" style="text-align:center">เวลา</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.time" class="form-control" value="@Model.ListBW2[0].Commander_Datetime.Value.ToString("HH:mm")" id="" readonly>
+                                <input hidden id="time" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        @{
+                            string recipeintdatetime = (Model.ListBW2[0].Recipient_Datetime != null) ? Model.ListBW2[0].Recipient_Datetime.Value.ToString("dd/MM/yyyy HH:mm") : string.Empty;
+                        }
+
+                        <div class="form-group col-sm-12 col-md-12">
+                            <label class="col-sm-12 col-md-1" style="text-align:center">ชื่อผู้ติดต่อ</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.Contact_Name" class="form-control" value="@Model.ListBW2[0].Contact_Name" required maxlength="50" id="contactname" disabled>
+                            </div>
+                            <label class="col-sm-12 col-md-1" style="text-align:center">เบอร์ติดต่อ</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.Contact_Tel" class="form-control" value="@Model.ListBW2[0].Contact_Tel" required maxlength="20" id="contacttel" disabled>
+                            </div>
+                            <label class="col-sm-12 col-md-1" style="text-align:center">ลงชื่อผู้รับ</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.Recipient_Name" class="form-control" value="@Model.ListBW2[0].Recipient_Name" id="" readonly>
+                            </div>
+                            <label class="col-sm-12 col-md-1" style="text-align:center">วันที่ / เวลา</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="text" name="BW.Recipient_Datetime" class="form-control" value="@recipeintdatetime" id="" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th style="text-align:center" colspan="2">งานที่ต้องดำเนินการ</th>
+                                    <th style="text-align:center">รายละเอียด</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @{
+                                    string desc = Model.ListBW2[0].Description;
+
+                                    string file1 = null;
+                                    file1 = Model.ListBW2[0].wk_path_img;
+
+                                    string file1_1 = null;
+                                    string[] file2_1 = null;
+                                    string file3_1 = null;
+
+                                    if (file1 != null)
+                                    {
+                                        file1_1 = file1.Replace("~", string.Empty);
+                                        file2_1 = file1.Split('/');
+                                        file3_1 = file2_1[3];
+                                    }
+
+                                }
+
+                                <tr>
+                                    <td style="text-align:center;width:5%"><input type="radio" name="BW.Type_Work" required id="send" value="S" @if (Model.ListBW2[0].Type_Work == "S") { <text> checked </text> } disabled onchange="change(this)" style="transform:scale(2.0)" /></td>
+                                    <td>ส่งเอกสาร</td>
+                                    <td><input type="text" name="BW.des1" id="sendtext" class="form-control" value="@if (Model.ListBW2[0].Type_Work == "S") {  @desc }" disabled maxlength="300" placeholder="..." autocomplete="off" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"><input type="radio" name="BW.Type_Work" id="receive" value="R" @if (Model.ListBW2[0].Type_Work == "R") { <text> checked </text> } disabled onchange="change(this)" style="transform:scale(2.0)" /></td>
+                                    <td>รับเอกสาร</td>
+                                    <td><input type="text" name="BW.des2" id="receivetext" class="form-control" value="@if (Model.ListBW2[0].Type_Work == "R") {  @desc }" disabled maxlength="300" placeholder="..." autocomplete="off" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"><input type="radio" name="BW.Type_Work" id="other" value="O" @if (Model.ListBW2[0].Type_Work == "O") { <text> checked </text> } disabled onchange="change(this)" style="transform:scale(2.0)" /></td>
+                                    <td>อื่นๆ (ระบุ)</td>
+                                    <td><input type="text" name="BW.des3" id="othertext" class="form-control" value="@if (Model.ListBW2[0].Type_Work == "O") {  @desc }" disabled maxlength="300" placeholder="..." autocomplete="off" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center"><input type="radio" name="BW.Type_Work" id="bank" value="B" @if (Model.ListBW2[0].Type_Work == "B") { <text> checked </text> } disabled onchange="change(this)" style="transform:scale(2)" /></td>
+                                    <td>
+                                        ธนาคาร
+                                        <label style="padding-left:5px;width:50%">
+                                            <select class="form-control" name="BB.Bank_Name" id="bankselect" disabled>
+
+                                                @{
+                                                    string bankname = (Model.ListBW2[0].Bank_Name != null) ? Model.ListBW2[0].Bank_Name : string.Empty;
+
+                                                    switch (bankname)
+                                                    {
+                                                        case "KBANK":
+                                                            bankname = "กสิกรไทย";
+                                                            break;
+                                                        case "SCB":
+                                                            bankname = "ไทยพาณิชย์";
+                                                            break;
+                                                        case "BBL":
+                                                            bankname = "กรุงเทพ";
+                                                            break;
+                                                        case "TMB":
+                                                            bankname = "ทีเอ็มบี";
+                                                            break;
+                                                        case "BAY":
+                                                            bankname = "กรุงศรีอยุธยา";
+                                                            break;
+                                                        case "CITI":
+                                                            bankname = "ซิตี้แบงก์";
+                                                            break;
+                                                        case "GSB":
+                                                            bankname = "ออมสิน";
+                                                            break;
+                                                        case "KTB":
+                                                            bankname = "กรุงไทย";
+                                                            break;
+                                                        case "TBANK":
+                                                            bankname = "ธนชาต";
+                                                            break;
+                                                        case "HSBC":
+                                                            bankname = "ธนาคารฮ่องกงและเซี้ยงไฮ้ (HSBC)";
+                                                            break;
+                                                        case "UOB":
+                                                            bankname = "ยูโอบี (UOB)";
+                                                            break;
+                                                        case "BOA":
+                                                            bankname = "แบงก์ออฟอเมริกา (BOA)";
+                                                            break;
+                                                        case "CIMB":
+                                                            bankname = "ธนาคารซีไอเอ็มบีไทย (CIMB)";
+                                                            break;
+                                                        case "SCBT":
+                                                            bankname = "ธนาคารสแตนดาร์ดชาร์เตอร์ด (SCBT)";
+                                                            break;
+                                                        case "TTB":
+                                                            bankname = "ธนาคารทีเอ็มบีธนชาต (TTB)";
+                                                            break;
+                                                        case "Other":
+                                                            bankname = "ธนาคารอื่น";
+                                                            break;
+                                                        default:
+                                                            bankname = string.Empty;
+                                                            break;
+
+                                                    }
+                                                }
+
+                                                @if (bankname != string.Empty)
+                                                {
+                                                    <!--นำค่า Bank มาแสดงในช่อง ธนาคาร-->
+                                                    <option value="@Model.ListBW2[0].Bank_Name" selected="selected" hidden>@bankname</option>
+                                                    <option value="">-- เลือก --</option>
+                                                    <option value="KBANK">กสิกรไทย</option>
+                                                    <option value="SCB">ไทยพาณิชย์</option>
+                                                    <option value="BBL">กรุงเทพ</option>
+                                                    <option value="TMB">ทีเอ็มบี</option>
+                                                    <option value="BAY">กรุงศรีอยุธยา</option>
+                                                    <option value="CITI">ซิตี้แบงก์</option>
+                                                    <option value="GSB">ออมสิน</option>
+                                                    <option value="KTB">กรุงไทย</option>
+                                                    <option value="TBANK">ธนชาต</option>
+                                                    <option value="HSBC">ธนาคารฮ่องกงและเซี้ยงไฮ้ (HSBC)</option>
+                                                    <option value="UOB">ยูโอบี (UOB)</option>
+                                                    <option value="BOA">แบงก์ออฟอเมริกา (BOA)</option>
+                                                    <option value="CIMB">ธนาคารซีไอเอ็มบีไทย (CIMB)</option>
+                                                    <option value="SCBT">ธนาคารสแตนดาร์ดชาร์เตอร์ด (SCBT)</option>
+                                                    <option value="TTB">ธนาคารทีเอ็มบีธนชาต (TTB)</option>
+                                                    <option value="Other">ธนาคารอื่น</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="" selected="selected">-- เลือก --</option>
+                                                    <option value="KBANK">กสิกรไทย</option>
+                                                    <option value="SCB">ไทยพาณิชย์</option>
+                                                    <option value="BBL">กรุงเทพ</option>
+                                                    <option value="TMB">ทีเอ็มบี</option>
+                                                    <option value="BAY">กรุงศรีอยุธยา</option>
+                                                    <option value="CITI">ซิตี้แบงก์</option>
+                                                    <option value="GSB">ออมสิน</option>
+                                                    <option value="KTB">กรุงไทย</option>
+                                                    <option value="TBANK">ธนชาต</option>
+                                                    <option value="HSBC">ธนาคารฮ่องกงและเซี้ยงไฮ้ (HSBC)</option>
+                                                    <option value="UOB">ยูโอบี (UOB)</option>
+                                                    <option value="BOA">แบงก์ออฟอเมริกา (BOA)</option>
+                                                    <option value="CIMB">ธนาคารซีไอเอ็มบีไทย (CIMB)</option>
+                                                    <option value="SCBT">ธนาคารสแตนดาร์ดชาร์เตอร์ด (SCBT)</option>
+                                                    <option value="TTB">ธนาคารทีเอ็มบีธนชาต (TTB)</option>
+                                                    <option value="Other">ธนาคารอื่น</option>
+                                                }
+                                            </select>
+                                        </label>
+
+                                    </td>
+                                    <td>
+                                        <div class="col-sm-12 col-md-2">
+                                            <input type="radio" name="BB.Option" id="radiocheque" value="CH" disabled @if (Model.ListBW2[0].Option == "CH") { <text> checked </text> } onchange="change(this)" style="transform:scale(2.0)">
+                                            <label for="radiocheque" style="padding-left:5px">เช็ค</label>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <input type="radio" name="BB.Option" id="radiocash" value="C" disabled @if (Model.ListBW2[0].Option == "C") { <text> checked </text> } onchange="change(this)" style="transform:scale(2.0)">
+                                            <label for="radiocash" style="padding-left:5px">เงินสด</label>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <input type="radio" name="BB.Option" id="radiolc" value="LC" disabled @if (Model.ListBW2[0].Option == "LC") { <text> checked </text> } onchange="change(this)" style="transform:scale(2.0)">
+                                            <label for="radiolc" style="padding-left:5px">L/C</label>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                            <input type="radio" name="BB.Option" id="radioother" value="OT" disabled @if (Model.ListBW2[0].Option == "OT") { <text> checked </text> } onchange="change(this)" style="transform:scale(2.0)">
+                                            <label for="radioother" style="padding-left:5px;width:95%"><input name="BB.Other" id="othertextbank" class="form-control" maxlength="100" value="@Model.ListBW2[0].Other" disabled placeholder="อื่นๆ..." /></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="col-sm-12 col-md-6" id="inputfile">
+                                            @if (file1 != null)
+                                            {
+                                                <label>อัพโหลดไฟล์เพิ่มเติม</label>
+                                                <br />
+                                                <a href="@file1_1" target="_blank" id="forinputfile1" style="color:indianred">@file3_1</a>
+                                                <h4><label for="inputfile1" style="color:indianred;cursor:pointer"><br />เปลี่ยนไฟล์แนบใหม่</label></h4>
+                                                <input type="file" name="file" class="form-control hidden" id="inputfile1" disable accept=".jpg,.png,application/pdf" onchange="changefile1()">
+                                            }
+                                            else
+                                            {
+                                                <label>อัพโหลดไฟล์เพิ่มเติม</label>
+                                                <br />
+                                                <br />
+                                                <input type="file" class="form-control" id="inputfile1" name="file" accept=".jpg,.png,application/pdf" />
+
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td colspan="3">
+
+                                        <div class="col-sm-12 col-md-6">
+                                            <br />
+                                            <br />
+                                            <label>รายละเอียดเพิ่มเติม</label>
+                                            <textarea name="BW.Remark" id="remark" rows="3" class="form-control" disabled maxlength="600">@Model.ListBW2[0].Remark</textarea>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                            <br />
+                                            <br />
+                                            <label>รายละเอียดเพิ่มเติม (admin)</label>
+                                            <textarea name="BW.RemarkAdmin" id="remarkadmin" rows="3" class="form-control" disabled maxlength="600">@Model.ListBW2[0].RemarkAdmin</textarea>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+
+                                @{
+                                    string status1 = string.Empty;
+
+                                    switch (@Model.ListBW2[0].Status)
+                                    {
+                                        case "W":
+                                            status1 = "รอรับงาน";
+                                            break;
+                                        case "G":
+                                            status1 = "กำลังดำเนินการ";
+                                            break;
+                                        case "P":
+                                            status1 = "สำเร็จ";
+                                            break;
+                                        case "C":
+                                            status1 = "ยกเลิก";
+                                            break;
+                                    }
+                                }
+
+                                @if (Model.ListBW2[0].Status == "G" && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9"))
+                                {
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="col-sm-12 col-md-2" id="status" style="display:block">
+                                                <label>อัพเดตสถานะของงาน</label>
+                                                <select name="BW.Status" class="form-control">
+                                                    <option hidden value="@Model.ListBW2[0].Status">@status1</option>
+                                                    <option value="W">เปลี่ยนคนดำเนินการ</option>
+                                                    <option value="G">กำลังดำเนินการ</option>
+                                                    <option value="P">สำเร็จ</option>
+                                                    <option value="C">ยกเลิก</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box box-footer">
+                        @if (Session["Code"].ToString() == "45002" || Session["Code"].ToString() == "64037")
+                        {
+                            <div style="align-content:center" class="pull-left">
+                                <div class="col-sm-12 col-md-12">
+                                    @if (Model.MS_1 == "Y")
+                                    {
+                                        <label>Sompong Montien - เข้ามาดูแล้ว</label><br />
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                    @if (Model.MS_2 == "Y")
+                                    {
+                                        <label>Maetee Jundang - เข้ามาดูแล้ว</label><br />
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                    @if (Model.MS_3 == "Y")
+                                    {
+                                        <label>Chairat Kanha - เข้ามาดูแล้ว</label><br />
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                    @if (Model.MS_4 == "Y")
+                                    {
+                                        <label>Sommai Detphutsa - เข้ามาดูแล้ว</label><br />
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+
+                    <div style="display:block" id="" class="pull-left">
+                        <div class="col-sm-12 col-md-12">
+                            <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                        </div>
+                    </div>
+                    @if (Model.ListBW2[0].Status == "W")
+                    {
+
+                        <!-- เปิดสิทธิสำหรับ Admin ช่องรายละเอียดเพิ่มเติม(admin)-->
+                        if (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9")
+                        {
+                            <div style="display:block" id="editjob" class="pull-left">
+                                <div class="col-sm-12 col-md-12">
+                                    <button type="button" class="btn btn-warning" name="button" onclick="editclick('W','A')" role="button">แก้ไข</button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <!--Block ช่อง รายละเอียดเพิ่มเติม (admin) ให้ไม่สามารถแก้ไขได้-->
+                            <div style="display:block" id="editjob" class="pull-left">
+                                <div class="col-sm-12 col-md-12">
+                                    <button type="button" class="btn btn-warning" name="button" onclick="editclick('W')" role="button">แก้ไข</button>
+                                </div>
+                            </div>
+                        }
+
+                        <div style="display:none" id="savejob" class="pull-right">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="submit" class="btn btn-info" name="BW.button" value="update" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                            </div>
+                        </div>
+
+                        if (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9")
+                        {
+                            <div style="display:block" id="rejectjob" class="pull-right">
+                                <div class="col-sm-12 col-md-12">
+                                    <button type="submit" class="btn btn-danger" name="BW.button" value="rejectjob" onclick="return confirm('ยืนยันการยกเลิก ?')" role="button">ยกเลิกงาน</button>
+                                </div>
+                            </div>
+                            <div style="display:block" id="acceptjob" class="pull-right">
+                                <div class="col-sm-12 col-md-12">
+                                    <button type="submit" class="btn btn-success" name="BW.button" value="acceptjob" onclick="return confirm('ยืนยันการรับงาน ?')" role="button">รับงาน</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    @if (Model.ListBW2[0].Status == "G" && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9"))
+                    {
+                        <div style="display:block" id="editjob" class="pull-left">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="button" class="btn btn-warning" name="button" onclick="editclick('G')" role="button">แก้ไข</button>
+                            </div>
+                        </div>
+                        <div style="display:none" id="save" class="pull-right">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="submit" class="btn btn-info" name="BW.button" value="update" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                            </div>
+                        </div>
+                        <div style="display:block" id="savejob" class="pull-right">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="submit" class="btn btn-info" name="BW.button" value="updatejob" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                            </div>
+                        </div>
+                    }
+                    @if (((Model.ListBW2[0].Status == "P") || (Model.ListBW2[0].Status == "C")) && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9"))
+                    {
+                        <div style="display:block" id="editjob" class="pull-left">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="button" class="btn btn-warning" name="button" onclick="editclick('P','A')" role="button">แก้ไข</button>
+                            </div>
+                        </div>
+                        <div style="display:none" id="savejob" class="pull-right">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="submit" class="btn btn-info" name="BW.button" value="update" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                            </div>
+                        </div>
+                    }
+                    @if (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9")
+                    {
+                        <div style="display:none" id="deletejob" class="pull-left">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="submit" class="btn btn-danger" name="BW.button" value="delete" onclick="return confirm('ยืนยันการลบ ?')" role="button">ลบ</button>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+                }
+
+
+
+            </div>
+        </div>
+    </div>
+
+}
+else
+{
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="box box-danger">
+
+                <div class="box-header with-border">
+                    <h3 class="box-title"><label style="font-weight:700">งานทั่วไป</label></h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @using (Html.BeginForm("getWorkOrder"
+                               , "GeoCoding"
+                               , FormMethod.Post
+                               , new { enctype = "multipart/form-data" }))
+                {
+                    <div class="box-body">
+
+                        @{
+                            short dept = Convert.ToInt16(Session["Department"]);
+                            string namedepartment = (Model.ListOUDP != null && Model.ListOUDP.Count() > 0) ? Model.ListOUDP.Where(z => z.Code == dept).Select(x => x.Name).FirstOrDefault() : string.Empty;
+                        }
+
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-12">
+                                <label class="col-sm-12 col-md-1" style="text-align:center">ชื่อผู้สั่งงาน</label>
+                                <div class="col-sm-12 col-md-2">
+                                    <input type="text" name="BW.Commander_Name" class="form-control" id="" value="@Session["Name"].ToString()" maxlength="50" readonly>
+                                </div>
+                                <div style="display:none">
+                                    <input type="text" name="BW.Commander_Code" class="form-control" id="" value="@Session["Code"].ToString()" readonly>
+                                </div>
+                                <label class="col-sm-12 col-md-1" style="text-align:center">หน่วยงาน</label>
+                                <div class="col-sm-12 col-md-2">
+                                    <input type="text" name="BW.Commander_Department" class="form-control" readonly value="@namedepartment" id="" maxlength="50" autocomplete="off">
+                                </div>
+                                <label class="col-sm-12 col-md-1" style="text-align:center">วันที่แจ้งใช้งาน</label>
+                                <div class="col-sm-12 col-md-2">
+                                    <input type="text" name="BW.date" class="form-control" id="" value="@Model.date.ToString("dd/MM/yyyy")" readonly autocomplete="off">
+                                </div>
+                                <label class="col-sm-12 col-md-1" style="text-align:center">เวลา</label>
+                                <div class="col-sm-12 col-md-2">
+                                    <input type="text" name="BW.time" class="form-control" id="time" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-12">
+                                <label class="col-sm-12 col-md-1" style="text-align:center">ชื่อผู้ติดต่อ</label>
+                                <div class="col-sm-12 col-md-2">
+                                    <input type="text" name="BW.Contact_Name" class="form-control" id="contactname" required maxlength="50" autocomplete="off">
+                                </div>
+                                <label class="col-sm-12 col-md-1" style="text-align:center">เบอร์ติดต่อ</label>
+                                <div class="col-sm-12 col-md-2">
+                                    <input type="text" name="BW.Contact_Tel" class="form-control" id="contacttel" required maxlength="20" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th style="text-align:center" colspan="2">งานที่ต้องดำเนินการ</th>
+                                        <th style="text-align:center">รายละเอียด</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center;width:5%"><input type="radio" name="BW.Type_Work" required id="send" value="S" onchange="change(this)" style="transform:scale(2.0)" /></td>
+                                        <td>ส่งเอกสาร</td>
+                                        <td><input type="text" name="BW.des1" id="sendtext" class="form-control" maxlength="300" disabled placeholder="..." autocomplete="off" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"><input type="radio" name="BW.Type_Work" id="receive" value="R" onchange="change(this)" style="transform:scale(2.0)" /></td>
+                                        <td>รับเอกสาร</td>
+                                        <td><input type="text" name="BW.des2" id="receivetext" class="form-control" maxlength="300" disabled placeholder="..." autocomplete="off" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"><input type="radio" name="BW.Type_Work" id="other" value="O" onchange="change(this)" style="transform:scale(2.0)" /></td>
+                                        <td>อื่นๆ (ระบุ)</td>
+                                        <td><input type="text" name="BW.des3" id="othertext" class="form-control" maxlength="300" disabled placeholder="..." autocomplete="off" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center"><input type="radio" name="BW.Type_Work" id="bank" value="B" onchange="change(this)" style="transform:scale(2)" /></td>
+                                        <td>
+                                            ธนาคาร
+                                            <label style="padding-left:5px;width:50%">
+                                                <select class="form-control" name="BB.Bank_Name" id="bankselect" disabled>
+                                                    <option value="" selected="selected">-- เลือก --</option>
+                                                    <option value="KBANK">กสิกรไทย</option>
+                                                    <option value="SCB">ไทยพาณิชย์</option>
+                                                    <option value="BBL">กรุงเทพ</option>
+                                                    <option value="TMB">ทีเอ็มบี</option>
+                                                    <option value="BAY">กรุงศรีอยุธยา</option>
+                                                    <option value="CITI">ซิตี้แบงก์</option>
+                                                    <option value="GSB">ออมสิน</option>
+                                                    <option value="KTB">กรุงไทย</option>
+                                                    <option value="TBANK">ธนชาต</option>
+                                                    <option value="HSBC">ธนาคารฮ่องกงและเซี้ยงไฮ้ (HSBC)</option>
+                                                    <option value="UOB">ยูโอบี (UOB)</option>
+                                                    <option value="BOA">แบงก์ออฟอเมริกา (BOA)</option>
+                                                    <option value="CIMB">ธนาคารซีไอเอ็มบีไทย (CIMB)</option>
+                                                    <option value="SCBT">ธนาคารสแตนดาร์ดชาร์เตอร์ด (SCBT)</option>
+                                                    <option value="TTB">ธนาคารทีเอ็มบีธนชาต (TTB)</option>
+                                                    <option value="Other">ธนาคารอื่น</option>
+                                                </select>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-12 col-md-2">
+                                                <input type="radio" name="BB.Option" id="radiocheque" value="CH" disabled onchange="change(this)" style="transform:scale(2.0)">
+                                                <label for="radiocheque" style="padding-left:5px">เช็ค</label>
+                                            </div>
+                                            <div class="col-sm-12 col-md-2">
+                                                <input type="radio" name="BB.Option" id="radiocash" value="C" disabled onchange="change(this)" style="transform:scale(2.0)">
+                                                <label for="radiocash" style="padding-left:5px">เงินสด</label>
+                                            </div>
+                                            <div class="col-sm-12 col-md-2">
+                                                <input type="radio" name="BB.Option" id="radiolc" value="LC" disabled onchange="change(this)" style="transform:scale(2.0)">
+                                                <label for="radiolc" style="padding-left:5px">L/C</label>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <input type="radio" name="BB.Option" id="radioother" value="OT" disabled onchange="change(this)" style="transform:scale(2.0)">
+                                                <label for="radioother" style="padding-left:5px;width:95%"><input name="BB.Other" id="othertextbank" class="form-control" maxlength="100" disabled placeholder="อื่นๆ..." /></label>
+                                            </div>
+                                        </td>
+                                    <tr>
+                                        <td colspan="2">
+                                            <label>อัพโหลดไฟล์เพิ่มเติม</label>
+                                            <input type="file" name="file" accept=".jpg,.png,application/pdf" onchange="loadFile(event)">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="col-sm-12 col-md-6">
+                                                <br />
+                                                <br />
+                                                <label>รายละเอียดเพิ่มเติม</label>
+                                                <textarea name="BW.Remark" rows="3" class="form-control" maxlength="600"></textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="box box-footer">
+                        <div class="pull-right">
+                            <div class="col-sm-12 col-md-12">
+                                <button type="submit" class="btn btn-info" name="BW.button" onclick="return confirm('ยืนยันการบันทึก ?')" value="add" role="button">บันทึก</button>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var date = new Date();
+    date.setHours(date.getHours() + 7);
+    var currentTime = date.toISOString().substring(11, 16);
+    document.getElementById('time').value = currentTime;
+
+    var data = ['sendtext', 'receivetext', 'othertext'];
+    var bank = ['radiocheque', 'radiocash', 'radiolc', 'radioother'];
+    //var postoffice = ['postofficenormal', 'postofficeregister', 'postofficeems'];
+
+    function change(x) {
+
+        if (document.getElementById('bank').checked == true) {
+
+            banktrue();
+            bank2true();
+        }
+        else {
+
+            datatrue(x);
+            bankfalse();
+        }
+
+    }
+
+    function changefile1() {
+        var element = document.getElementById('inputfile1').value;
+        var element1 = [];
+        element1 = element.split('\\');
+        document.getElementById("forinputfile1").innerHTML = element1[2];
+    }
+    function datatrue(x) {
+
+        for (var i = 0; i < data.length; i++) {
+
+            name = x.id + "text";
+
+            if (name == data[i]) {
+                document.getElementById(name).disabled = false;
+            }
+            else {
+
+                document.getElementById(data[i]).disabled = true;
+                //document.getElementById(data[i]).value = "";
+            }
+        }
+    }
+
+    function banktrue() {
+
+        document.getElementById('bankselect').disabled = false;
+
+        for (var i = 0; i < bank.length; i++) {
+
+            document.getElementById(bank[i]).disabled = false;
+        }
+
+        for (var i = 0; i < data.length; i++) {
+
+            document.getElementById(data[i]).disabled = true;
+            //document.getElementById(data[i]).value = "";
+        }
+    }
+
+    function bank2true() {
+
+        var checkother = document.getElementById('radioother').checked;
+
+        if (checkother == true) {
+            document.getElementById('othertextbank').disabled = false;
+        }
+        else {
+            document.getElementById('othertextbank').disabled = true;
+            //document.getElementById('othertextbank').value = "";
+        }
+    }
+
+    function bankfalse() {
+
+        document.getElementById('bankselect').disabled = true;
+        document.getElementById('bankselect').selectedIndex = 0;
+
+        for (var j = 0; j < bank.length; j++) {
+
+            document.getElementById(bank[j]).disabled = true;
+            document.getElementById(bank[j]).checked = false;
+        }
+    }
+    
+        function myFunction() {
+            window.location.href = '@Url.Action("WorkList","GeoCoding")'
+        }
+    function editclick(x, y) {
+
+        if (x == "G") {
+
+            document.getElementById("save").style.display = 'block';
+            document.getElementById('remark').disabled = false;
+            document.getElementById('inputfile1').disabled = false;
+            document.getElementById('inputfile').disabled = false;
+            document.getElementById("savejob").style.display = 'none';
+            document.getElementById("deletejob").style.display = 'block';
+            document.getElementById("status").style.display = 'none';
+
+            document.getElementById('send').disabled = false;
+            document.getElementById('receive').disabled = false;
+            document.getElementById('other').disabled = false;
+            document.getElementById('bank').disabled = false;
+            //document.getElementById('postoffice').disabled = false;
+            document.getElementById('remark').disabled = false;
+
+            document.getElementById('remarkadmin').disabled = false;
+            document.getElementById('contactname').disabled = false;
+            document.getElementById('contacttel').disabled = false;
+
+            if (document.getElementById('send').checked == true)
+                document.getElementById('sendtext').disabled = false;
+            if (document.getElementById('receive').checked == true)
+                document.getElementById('receivetext').disabled = false;
+            if (document.getElementById('other').checked == true)
+                document.getElementById('othertext').disabled = false;
+
+            change();
+        }
+        else {
+            document.getElementById('send').disabled = false;
+            document.getElementById('receive').disabled = false;
+            document.getElementById('other').disabled = false;
+            document.getElementById('bank').disabled = false;
+            //document.getElementById('postoffice').disabled = false;
+            document.getElementById('remark').disabled = false;
+            document.getElementById('inputfile1').disabled = false;
+            document.getElementById('contactname').disabled = false;
+            document.getElementById('contacttel').disabled = false;
+
+            if (y == "A") {
+                document.getElementById('remarkadmin').disabled = false;
+            }
+
+            document.getElementById("savejob").style.display = 'block';
+
+            document.getElementById("editjob").style.display = 'block';
+            document.getElementById("deletejob").style.display = 'block';
+
+            if (x == 'W') {
+                document.getElementById("acceptjob").style.display = 'none';
+                document.getElementById("rejectjob").style.display = 'none';
+            }
+
+            if (document.getElementById('send').checked == true)
+                document.getElementById('sendtext').disabled = false;
+            if (document.getElementById('receive').checked == true)
+                document.getElementById('receivetext').disabled = false;
+            if (document.getElementById('other').checked == true)
+                document.getElementById('othertext').disabled = false;
+
+            change();
+        }
+
+    }
+
+    function back() {
+        window.history.back();
+    }
+    
+    
+       $(function () {
+        $('#previewDocumentDialog').dialog({
+            autoOpen: false,
+            resizable: false,
+            title: 'Preview',
+            modal: true,
+            width: 400,
+            height: 500,
+            open: function(event, ui) {
+                //Load the PreviewWordDocument action which will return a partial view called _PreviewWordDocument
+                $(this).load("@Url.Action("PreviewWordDocument")"); //add parameters if necessary
+            },
+            buttons: {
+                "Close": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        // an event click for you preview link to open the dialog
+        $('#previewLink').click(function () {
+            $('#previewDocumentDialog').dialog('open');
+        });
+    });
+    var loadFile = function (event) {
+        var output = document.getElementById('output');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+
+    };
+</script>
+
+@Html.Raw(TempData["msg"])
+

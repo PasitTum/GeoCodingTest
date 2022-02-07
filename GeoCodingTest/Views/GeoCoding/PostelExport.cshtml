@@ -1,0 +1,291 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<body>
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">รายงานไปรษณีย์ (excel)</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+
+                    @using (Html.BeginForm("PostelExport"
+                                            , "GeoCoding"
+                                            , FormMethod.Post
+                                            , new { id = "oForm" }))
+                    {
+                        <div class="form-group col-sm-12 col-md-12">
+                            <label class="col-sm-12 col-md-1" style="text-align:center">ตั้งแต่วันที่</label>
+
+                            @{
+                                string datefrom = (Model.datefrom != null) ? Model.datefrom.ToString("yyyy-MM-dd") : string.Empty;
+                                string dateto = (Model.dateto != null) ? Model.dateto.ToString("yyyy-MM-dd") : string.Empty;
+                            }
+
+                            <div class="col-sm-12 col-md-2">
+                                <input type="date" name="datefrom" value="@datefrom" required class="form-control">
+                            </div>
+                            <label class="col-sm-12 col-md-1" style="text-align:center">ถึง</label>
+                            <div class="col-sm-12 col-md-2">
+                                <input type="date" name="dateto" value="@dateto" required class="form-control">
+                            </div>
+                            <label class="col-sm-12 col-md-2" style="text-align:center">ประเภทงาน</label>
+                            <div class="col-sm-12 col-md-4">
+
+                                <div class="col-sm-12 col-md-3">
+                                    <input type="checkbox" name="checkbox" id="normal" @if (Model.checkbox != null && Model.checkbox.Contains("normal")) { <text> checked </text> } value="normal" style="transform:scale(2.0)">
+                                    <label for="normal" style="padding-left:5px">ธรรมดา</label>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <input type="checkbox" name="checkbox" id="register" @if (Model.checkbox != null && Model.checkbox.Contains("register")) { <text> checked </text> } value="register" style="transform:scale(2.0)">
+                                    <label for="register" style="padding-left:5px">ลงทะเบียน</label>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <input type="checkbox" name="checkbox" id="ems" @if (Model.checkbox != null && Model.checkbox.Contains("ems")) { <text> checked </text> } value="ems" style="transform:scale(2.0)">
+                                    <label for="ems" style="padding-left:5px">EMS</label>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <input type="checkbox" name="checkbox" id="emsar" @if (Model.checkbox != null && Model.checkbox.Contains("emsar")) { <text> checked </text> } value="emsar" style="transform:scale(2.0)">
+                                    <label for="emsar" style="padding-left:5px">EMS – AR (ตอบรับ)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-12">
+
+                            <div class="col-sm-12 col-md-12">
+                                <button type="submit" name="button" id="btn1" value="search" class="btn btn-info ">ค้นหา</button>
+                                <button type="submit" name="button" id="btn2" value="export" class="btn btn-info ">Export</button>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+
+                <div class="box-footer table-responsive no-padding">
+
+                    <table id="example" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                        <thead>
+                            <tr role="row">
+                                <th>ID</th>
+                                <th>นามผู้รับ</th>
+                                <th>ประเภท</th>
+                                <th>รหัสไปรษณีย์</th>
+                                <th>เลข Tracking</th>
+                                <th>เลข EMSตอบกลับ</th>
+                                <th>ค่าบริการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model != null && Model.ListBW2 != null && Model.ListBW2.Count > 0)
+                            {
+                                int i = 1;
+
+                                foreach (var oItem in Model.ListBW2)
+                                {
+                                    string type = string.Empty;
+
+                                    switch (oItem.Type)
+                                    {
+                                        case "normal":
+                                            type = "ธรรมดา";
+                                            break;
+                                        case "register":
+                                            type = "ลงทะเบียน";
+                                            break;
+                                        case "ems":
+                                            type = "EMS";
+                                            break;
+                                        case "emsar":
+                                            type = "EMS – AR (ตอบรับ)";
+                                            break;
+                                    }
+                                
+                                <tr>
+                                    <td style="text-align:center"><u><a href="~/GeoCoding/WorkOrderPostel2?id=@oItem.WorkOrder_ID" target="_blank">@oItem.Postel_ID</a></u></td>
+                                    <td>@oItem.Name</td>
+                                    <td>@type</td>
+                                    <td>@oItem.Postel</td>
+                                    <td>@oItem.Itemcode</td>
+                                    <td>@oItem.EMSRev</td>
+                                    <td>@oItem.price</td>
+                                </tr>
+
+                                i++;
+                            }
+                        }
+                            </tbody>
+                        </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+    <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+
+    <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+
+    <link href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+
+
+    @*Gridview*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#odgvData').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': false,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                }
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                var tPage = this.search;
+
+                if (tPage == "")
+                    return false;
+
+                tPage = tPage.replace("?", "");
+                tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+                //var radioValue = $("input[name='XVScanType']:checked").val();
+                //pmdoData = {
+                //    XVScanType: radioValue,
+                //    XVSearch: $("#XVSearch").val(),
+                //}
+
+                //$.ajax({
+                //    url: this.href,
+                //    type: 'POST',
+                //    data: pmdoData,
+                //    cache: false,
+                //    async: true,
+                //    error: function (jqXHR, error, errorThrown) {
+                //        //display error
+                //    },
+                //    success: function (data, textStatus, jqXHR) {
+                //        $("body").html(data);
+                //    }
+                //});
+                return false;
+            });
+        });
+
+        $(document).ready(function () {
+            $('#btn1').click(function () {
+                checked = $("input[type=checkbox]:checked").length;
+
+                if (!checked) {
+                    alert("เลือกประเภทงาน อย่างน้อย 1 อย่าง");
+                    return false;
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+            $('#btn2').click(function () {
+                checked = $("input[type=checkbox]:checked").length;
+
+                if (!checked) {
+                    alert("เลือกประเภทงาน อย่างน้อย 1 อย่าง");
+                    return false;
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+            var collapsedGroups = {};
+
+            var table = $('#example').DataTable({
+                order: [[0, 'asc']],
+                paging: true,
+                lengthChange: false,
+                searching: true,
+                "lengthMenu": false,
+                "pageLength": -1,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                },
+                rowGroup: {
+                    // Uses the 'row group' plugin
+                    dataSrc: 0,
+                    startRender: function (rows, group) {
+                        var collapsed = !!collapsedGroups[group];
+
+                        rows.nodes().each(function (r) {
+                            r.style.display = collapsed ? 'none' : '';
+                        });
+
+                        // Add category name to the <tr>. NOTE: Hardcoded colspan
+                        return $('<tr/>')
+                            .append('<td colspan="7"  class="box box-primary">' +'เลขที่งานทั่วไป : '+ group + ' - ทั้งหมด ( ' + rows.count() + ') รายการ</td>')
+                            .attr('data-name', group)
+                            .toggleClass('collapsed', collapsed);
+                    }
+                }
+            });
+
+            /*
+            $('#example tbody tr.group-start').each(function() {
+              var name = $(this).data('name');
+              collapsedGroups[name] = !collapsedGroups[name];
+            });
+            */
+
+            // Start with all groups collapsed
+            table.column(0).data().unique().each(function (d, j) {
+                collapsedGroups[d] = !collapsedGroups[d];
+            });
+
+            table.draw(false);
+
+            $('#example tbody').on('click', 'tr.group-start', function () {
+                var name = $(this).data('name');
+                collapsedGroups[name] = !collapsedGroups[name];
+                table.draw(false);
+            });
+
+
+
+        });
+    </script>
+}

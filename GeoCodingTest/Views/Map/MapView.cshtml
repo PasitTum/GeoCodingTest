@@ -1,0 +1,130 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+@Html.Raw(TempData["msg"])
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">ดูแผนที่</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-footer table-responsive no-padding">
+
+                    @using (Html.BeginForm("MapEdit"
+                                         , "Map"
+                                         , FormMethod.Post
+                                         , new { id = "oForm" }))
+                    {
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>รูปภาพ</th>
+                                    <th>รหัสลูกค้า</th>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>ที่อยู่</th>
+                                    <th>หมายเหตุ</th>
+                                    <th>วันที่บันทึก</th>
+                                    <th>แก้ไข</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListMap != null && Model.ListMap.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListMap)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            string a = oItem.SubmitDate.Value.ToString("dd/MM/yyyy");
+
+                                            <tr>
+                                                <td style="width:300px;"><img style="height:250px;width:290px;" src="@Url.Content(oItem.PathImg)" alt="Image" /></td>
+                                                <td>@oItem.CardCode</td>
+                                                <td>@oItem.CardName</td>
+                                                <td>@oItem.Address</td>
+                                                <td>@oItem.Remark</td>
+                                                <td>@a</td>
+                                                <td>
+                                                    <button type="submit" name="cardcode" value="@oItem.CardCode"><img src="~/Content/adminlte/dist/img/pencil.png" /></button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+    @*Gridview*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#odgvData').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': false,
+                'info': true,
+                'autoWidth': false,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                },
+                "iDisplayLength": 10
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                var tPage = this.search;
+
+                if (tPage == "")
+                    return false;
+
+                tPage = tPage.replace("?", "");
+                tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+                //var radioValue = $("input[name='XVScanType']:checked").val();
+                //pmdoData = {
+                //    XVScanType: radioValue,
+                //    XVSearch: $("#XVSearch").val(),
+                //}
+
+                //$.ajax({
+                //    url: this.href,
+                //    type: 'POST',
+                //    data: pmdoData,
+                //    cache: false,
+                //    async: true,
+                //    error: function (jqXHR, error, errorThrown) {
+                //        //display error
+                //    },
+                //    success: function (data, textStatus, jqXHR) {
+                //        $("body").html(data);
+                //    }
+                //});
+                return false;
+            });
+        });
+    </script>
+}
+

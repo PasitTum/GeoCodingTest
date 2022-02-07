@@ -1,0 +1,139 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">เงื่อนไขการวางบิลรับเช็ค</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+
+                    @using (Html.BeginForm("ConditionBilling"
+                                , "GeoCoding"
+                                , FormMethod.Post
+                                , new { id = "oForm" }))
+                    {
+                        <div id="ifselectc" style="display:block">
+                            <div class="form-group">
+                                <label for="inputEmail3">รหัสลูกค้า(C)</label>
+                                <input type="text" name="cardcodeno" class="form-control" id="inputcode" value="C" placeholder="รหัสลูกค้า">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail3">ชื่อลูกค้า(C)</label>
+                                <input type="text" name="cardname" class="form-control" id="inputname" placeholder="ชื่อลูกค้า">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info ">ค้นหา</button>
+                    }
+                    <br />
+                </div>
+
+                @if (Model != null && Model.ListOCRD != null && Model.ListOCRD.Count > 0)
+                {
+                    <div class="box-footer table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>รหัสลูกค้า</th>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>เงื่อนไขการชำระเงิน</th>
+                                    <th>ครบกำหนดการชำระเงิน</th>
+                                    <th>เงื่อนไขการวางบิล</th>
+                                    <th>เงื่อนไขการรับเช็ค</th>
+                                    <th>การชำระเงิน</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    foreach (var oItem in Model.ListOCRD)
+                                    {
+                                        string docduedate = oItem.DocDueDate.Value.ToString("dd/MM/yyyy");
+
+                                        <tr>
+                                            <td>@oItem.CardCode</td>
+                                            <td>@oItem.CardName</td>
+                                            <td>@oItem.PymntGroup</td>
+                                            <td>@docduedate</td>
+                                            <td>@oItem.U_WGE_Billing</td>
+                                            <td>@oItem.U_WGE_PayDetail</td>
+                                            <td>@oItem.U_WGE_BillingIns</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+    @*Gridview*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#odgvData').DataTable({
+                'paging': false,
+                'lengthChange': false,
+                'searching': false,
+                'ordering': false,
+                'info': false,
+                'autoWidth': true,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                },
+                "iDisplayLength": 25
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                var tPage = this.search;
+
+                if (tPage == "")
+                    return false;
+
+                tPage = tPage.replace("?", "");
+                tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+                //var radioValue = $("input[name='XVScanType']:checked").val();
+                //pmdoData = {
+                //    XVScanType: radioValue,
+                //    XVSearch: $("#XVSearch").val(),
+                //}
+
+                //$.ajax({
+                //    url: this.href,
+                //    type: 'POST',
+                //    data: pmdoData,
+                //    cache: false,
+                //    async: true,
+                //    error: function (jqXHR, error, errorThrown) {
+                //        //display error
+                //    },
+                //    success: function (data, textStatus, jqXHR) {
+                //        $("body").html(data);
+                //    }
+                //});
+                return false;
+            });
+        });
+    </script>
+}

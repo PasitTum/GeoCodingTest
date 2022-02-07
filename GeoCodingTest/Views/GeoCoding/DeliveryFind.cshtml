@@ -1,0 +1,150 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">ค้นหาเอกสาร</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListDocument != null && Model.ListDocument.Count > 0)
+                {
+                    <div class="box-footer table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>เลือก</th>
+                                    <th>หมายเหตุ</th>
+                                    <th>ผู้บันทึก</th>
+                                    <th>วันที่บันทึก</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListDocument != null && Model.ListDocument.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListDocument)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            //decimal a = oItem.Total ?? 0;
+                                            //var b = Math.Round(a,2);
+                                            //var b = string.Format("{0:n}", Math.Round(a, 2));
+
+                                            //string c = oItem.DateBill.Value.ToString("dd/MM/yyyy");
+                                            string d = oItem.SubmitDate.Value.ToString("dd/MM/yyyy");
+
+                                            string e = "";
+
+                                            switch (oItem.TypeID)
+                                            {
+                                                case "1":
+                                                    e = "เข้าเช็ค";
+                                                    break;
+                                                case "2":
+                                                    e = "ส่งไปรษณีย์";
+                                                    break;
+                                                case "3":
+                                                    e = "ส่งเอกสาร";
+                                                    break;
+                                                case "4":
+                                                    e = "อื่นๆ ระบุ";
+                                                    break;
+                                                case "5":
+                                                    e = "งานออนไลน์";
+                                                    break;
+                                            }
+                                             
+                                            <tr>
+                                                <td>@e</td>
+                                                @if (oItem.TypeID == "5")
+                                                {
+                                                    string date = oItem.daterecive.Value.ToString("dd/MM/yyyy");
+                                                    <td>งานออนไลน์ : เลขที่งาน-@oItem.order | วันที่ส่ง : @date | ราคา : @oItem.price | หมายเหตุ : @oItem.Remark</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@oItem.Remark</td>
+                                                }
+                                                <td>@oItem.Name</td>
+                                                <td>@d</td>
+                                            </tr>
+                                            }
+                                        }
+                                    }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+    @*Gridview*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#odgvData').DataTable({
+                                            'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': false,
+                'info': true,
+                'autoWidth': true,
+                language: {
+                                                "zeroRecords": "ไม่มีข้อมูล"
+                },
+                "iDisplayLength": 25
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                                            var tPage = this.search;
+
+                                            if (tPage == "")
+                                                return false;
+
+                                            tPage = tPage.replace("?", "");
+                                            tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+                                            //var radioValue = $("input[name='XVScanType']:checked").val();
+                                            //pmdoData = {
+                                            //    XVScanType: radioValue,
+                                            //    XVSearch: $("#XVSearch").val(),
+                                            //}
+
+                                            //$.ajax({
+                                            //    url: this.href,
+                                            //    type: 'POST',
+                                            //    data: pmdoData,
+                                            //    cache: false,
+                                            //    async: true,
+                                            //    error: function (jqXHR, error, errorThrown) {
+                                            //        //display error
+                                            //    },
+                                            //    success: function (data, textStatus, jqXHR) {
+                                            //        $("body").html(data);
+                                            //    }
+                                            //});
+                                            return false;
+                                        });
+                                    });
+    </script>
+}
+

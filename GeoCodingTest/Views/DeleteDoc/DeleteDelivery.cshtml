@@ -1,0 +1,250 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<form id="form1" runat="server">
+    <div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var name;
+        var code;
+        var arr = [];
+        //var id;
+
+        function getLocation() {
+
+            name = document.getElementById("Name").innerText;
+            code = document.getElementById("Code").innerText;
+            //id = document.getElementById("id1").innerText;
+
+            if (name != "") {
+                ajax();
+            }
+            else {
+                alert("text not empty");
+            }
+        }
+
+        function ajax() {
+
+            $.ajax({
+                url: '@Url.Action("DeleteDelivery2", "DeleteDoc")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+                    id1: name + "," + code + "," + arr
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    alert("Success!");
+                    window.location.href = '/DeleteDoc/DeleteDelivery/';
+                }
+            });
+
+
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+
+        function myFunction() {  //ค้นหา
+            var input3, filter3, table, tr,td3, i,txtValue3;
+            input3 = document.getElementById("myInput3");
+            filter3 = input3.value.toUpperCase();
+            table = document.getElementById("odgvData");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td3 = tr[i].getElementsByTagName("td")[3];
+                if (td3) {
+                    txtValue3 = td3.textContent || td3.innerText;
+                    if (txtValue3.toUpperCase().indexOf(filter3) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function Clear() {  //เคลียร์
+            document.getElementById("myInput").value = "";
+            document.getElementById("myInput2").value = "";
+            document.getElementById("myInput3").value = "";
+
+            myFunction();
+        }
+
+        function myCheckBox() {
+            //Reference the Table.
+            var grid = document.getElementById("odgvData");
+
+            //Reference the CheckBoxes in Table.
+            var checkBoxes = grid.getElementsByTagName("input");
+            var sum = parseFloat("0");
+            var checkpoint = parseFloat("0");
+            var i = parseInt("0");
+            arr = [];
+
+            var Tmessage = "";
+            var Hmessage = "ยืนยันการบันทึก?\n\n";
+            var message = "";
+
+            //Loop through the CheckBoxes.
+            for (var i = 1; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    var row4 = row.cells[5].innerHTML //
+                    var tot = row4.replace(/,/g, ''); //
+
+                    message += row.cells[1].innerText;
+                    message += "  " + row.cells[2].innerText;
+                    message += " " + row.cells[3].innerText;
+                    message += "\n";
+                    //sum += parseFloat(tot); 
+                    checkpoint += parseInt(1);
+                    arr.push(row.cells[5].innerText);
+                }
+            }
+
+            var totResult = currencyFormat(sum); //
+
+            Tmessage += "รายการทั้งหมด " + checkpoint + " รายการ \n";
+
+            message = Hmessage + Tmessage + message
+
+            var r = confirm(message);
+
+            if (r == true) {
+                getLocation();
+            }
+            else {
+
+            }
+        }
+
+        function currencyFormat(num) {
+            return  num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        }
+
+        function toggle(checktoggle) {
+
+            var checkboxes = new Array();
+            checkboxes = document.getElementsByName('product-status');
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    if (checkboxes[i].parentNode.parentNode.style.display != "none") {
+                        checkboxes[i].checked = checktoggle.checked;
+                    }
+                }
+            }
+        }
+
+    </script>
+</form>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">ลบเอกสารรับส่งเอกสาร</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">                   
+
+                    <div id="ifselectcp2" class="form-group col-sm-12" >
+                        <input style="width:160px;margin-left:-15px;" class="form-control col-sm-12" type="text" id="myInput3" onkeyup="myFunction()" placeholder="ค้นหาจากวันที่..." title="Type in a name">
+                    </div>
+                    <div id="" class="" style="display:block">
+                        <button style="width:100px;margin-right:5px;" class="btn btn-info col-sm-6" type="submit" onclick="Clear();">ล้างการค้นหา</button>
+                        <button style="width:70px;" class="btn btn-info col-sm-6" type="submit" onclick="myCheckBox();">ลบ</button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListDocument != null && Model.ListDocument.Count > 0)
+                {
+                    <div class="box-footer table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th><input style="height:18px;width:20px;" type="checkbox" onClick="toggle(this)" />All</th>
+                                    <th>เลือก</th>
+                                    <th>หมายเหตุ</th>
+                                    <th>วันที่บันทึก</th>
+                                    <th>ผู้บันทึก</th>
+                                    <th></th>
+                                    <th style="display:none" id="Name">@Session["Name"]</th>
+                                    <th style="display:none" id="Code">@Session["Code"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListDocument != null && Model.ListDocument.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListDocument)
+                                    {
+
+                                        string c = oItem.SubmitDate.Value.ToString("dd/MM/yyyy");
+
+                                        string d = "";
+
+                                        switch (oItem.TypeID)
+                                        {
+                                            case "1":
+                                                d = "เข้าเช็ค";
+                                                break;
+                                            case "2":
+                                                d = "ส่งไปรษณีย์";
+                                                break;
+                                            case "3":
+                                                d = "ส่งเอกสาร";
+                                                break;
+                                            case "4":
+                                                d = "อื่นๆ ระบุ";
+                                                break;
+
+                                            default:
+                                                // code block
+                                                break;
+                                        }
+
+                                        <tr>
+                                            <td><input style="height:18px;width:20px;" type="checkbox" name="product-status" id="product-status" /></td>
+                                            <td>@d</td>
+                                            <td>@oItem.Remark</td>
+                                            <td>@c</td>
+                                            <td>@oItem.Name</td>
+                                            <td style="display:none" id="id1">@oItem.ID</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>

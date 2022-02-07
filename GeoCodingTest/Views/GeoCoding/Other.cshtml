@@ -1,0 +1,134 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript">
+
+    function Clear() {  //เคลียร์
+            document.getElementById("myInput").value = "";
+
+            myFunction();
+    }
+
+</script>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-6">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">อื่นๆ</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+
+                    @using (Html.BeginForm("Other"
+                                , "GeoCoding"
+                                , FormMethod.Post
+                                , new { id = "oForm" }))
+                    {
+                        <div class="form-group">
+                            <label for="inputEmail3">รหัสลูกค้า</label>
+                            <input type="text" name="cardcodeno" class="form-control" id="inputname" value="C" placeholder="รหัสลูกค้า">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3">ชื่อลูกค้า</label>
+                            <input type="text" name="cardname" class="form-control" id="inputname" placeholder="ชื่อลูกค้า">
+                        </div>
+                        <button type="submit" class="btn btn-info ">ค้นหา</button>
+                    }
+                    <br />
+
+                    <div class="form-group col-sm-12">
+                        <input style="width:160px;margin-left:-15px;" class="form-control col-sm-12" type="text" id="myInput" onkeyup="myFunction()" placeholder="ค้นหาจากเลขที่บิล..." title="Type in a name">
+                    </div>
+                    <div id="" class="" style="display:block">
+                        <button style="width:100px;margin-right:5px;" class="btn btn-info col-sm-6" type="submit" onclick="Clear();">ล้างการค้นหา</button>
+                        <button style="width:70px;" class="btn btn-info col-sm-6" type="submit" onclick="myCheckBox();">บันทึก</button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                {
+                    <div class="box-footer table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>เลขที่บิล</th>
+                                    <th>รหัสลูกค้า</th>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>วันที่บิล</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListOINV)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            string c = oItem.DocDate.Value.ToString("dd/MM/yyyy");
+
+                                            <tr>
+                                                <td>@oItem.DocNum</td>
+                                                <td>@oItem.CardCode</td>
+                                                <td>@oItem.CardName</td>
+                                                <td>@c</td>
+                                                <td style="display:none">@Session["CardCode"] = @oItem.CardCode;</td>
+                                                <td style="display:none">@Session["CardName"] = @oItem.CardName;</td>
+                                                <td style="display:none">@Session["Name"].ToString()</td>
+                                                <td style="display:none">@Session["Code"].ToString()</td>
+                                                <td style="display:none">@Session["TypeID"].ToString()</td>
+                                                <td>
+                                                    <a class="btn btn-primary" href="~/GeoCoding/Other2?invno=@oItem.DocNum">Submit</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+@*Gridview*@
+<script>
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("odgvData");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+</script>
+}

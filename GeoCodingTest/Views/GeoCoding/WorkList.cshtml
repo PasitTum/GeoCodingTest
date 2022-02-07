@@ -1,0 +1,355 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript">
+
+</script>
+
+<body>
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">รายการงานทั่วไป - รอรับงาน , กำลังดำเนินการ</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body table-responsive no-padding">
+                    <br />
+
+                    @using (Html.BeginForm("WorkOrder"
+                                     , "GeoCoding"
+                                     , FormMethod.Post
+                                     , new { id = "oForm" }))
+                    {
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>ID</th>
+                                    <th>ชื่อผู้สั่งงาน</th>
+                                    <th>หน่วยงาน</th>
+                                    <th>วันที่แจ้งงาน</th>
+                                    <th>ประเภทของงาน</th>
+                                    <th>สถานะ</th>
+                                    <th>รับงานโดย</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (Model != null && Model.ListBW != null && Model.ListBW.Count > 0)
+                                            {
+                                                foreach (var oItem in Model.ListBW)
+                                                {
+                                                    string type = string.Empty;
+                                                    string status = string.Empty;
+
+                                                    switch (oItem.Type_Work)
+                                                    {
+                                                        case "S":
+                                                            type = "ส่งเอกสาร";
+                                                            break;
+                                                        case "R":
+                                                            type = "รับเอกสาร";
+                                                            break;
+                                                        case "O":
+                                                            type = "อื่นๆ";
+                                                            break;
+                                                        case "B":
+                                                            type = "ธนาคาร";
+                                                            break;
+                                                        case "E":
+                                                            type = "งานส่งไปรษณีย์(EMS)";
+                                                            break;
+                                                        case "U":
+                                                            type = "งานไปรษณีย์(ลงทะเบียน)";
+                                                            break;
+                                                        case "G":
+                                                            type = "งานไปรษณีย์(ธรรมมดา)";
+                                                            break;
+                                                    }
+
+                                                    switch (oItem.Status)
+                                                    {
+                                                        case "W":
+                                                            status = "รอรับงาน";
+                                                            break;
+                                                        case "G":
+                                                            status = "กำลังดำเนินการ";
+                                                            break;
+                                                        case "P":
+                                                            status = "สำเร็จ";
+                                                            break;
+                                                        case "C":
+                                                            status = "ยกเลิก";
+                                                            break;
+                                                        case "F":
+                                                            status = "ปิดรอบรอรับงาน";
+                                                            break;
+                                                    }
+
+                                <tr>
+                                    <td>@oItem.Work_ID</td>
+                                    <td>@oItem.Commander_Name</td>
+                                    <td>@oItem.Commander_Department</td>
+                                    <td data-order="@oItem.Commander_Datetime.Value.ToString("yyyyMMdd")">@oItem.Commander_Datetime.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@type</td>
+                                    <td style="@if (oItem.Status == "W") { <text> color:red; </text> } else if (oItem.Status == "A") { <text> color:blue; </text>} ">@status</td>
+                                    <td>@oItem.Recipient_Name - @oItem.Recipient_Code</td>
+                                    @if (oItem.Type_Work == "E"|| oItem.Type_Work == "U"|| oItem.Type_Work == "G")
+                                                {
+                                        <td>
+                                            <button type="submit" name="postel" value="@oItem.WorkOrder_ID"  class="btn btn-info">Submit</button>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <button type="submit" name="id" value="@oItem.ID" class="btn btn-info">Submit</button>
+                                        </td>
+                                    }
+                                </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">รายการงานทั่วไป - สำเร็จ , ยกเลิก</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body table-responsive no-padding">
+                    <br />
+
+                    @using (Html.BeginForm("WorkOrder"
+                                     , "GeoCoding"
+                                     , FormMethod.Post
+                                     , new { id = "oForm" }))
+                    {
+                        <table id="odgvData2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>ID</th>
+                                    <th>ชื่อผู้สั่งงาน</th>
+                                    <th>หน่วยงาน</th>
+                                    <th>วันที่แจ้งงาน</th>
+                                    <th>ประเภทของงาน</th>
+                                    <th>สถานะ</th>
+                                    <th>รับงานโดย</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (Model != null && Model.ListBW1 != null && Model.ListBW1.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListBW1)
+                                    {
+                                        string type = string.Empty;
+                                string status = string.Empty;
+
+                                        switch (oItem.Type_Work)
+                                        {
+                                            case "S":
+                                                type = "ส่งเอกสาร";
+                                                break;
+                                            case "R":
+                                                type = "รับเอกสาร";
+                                                break;
+                                            case "O":
+                                                type = "อื่นๆ";
+                                                break;
+                                            case "B":
+                                                type = "ธนาคาร";
+                                                break;
+                                            case "E":
+                                                type = "งานส่งไปรษณีย์(EMS)";
+                                                break;
+                                            case "U":
+                                                type = "งานไปรษณีย์(ลงทะเบียน)";
+                                                break;
+                                            case "G":
+                                                type = "งานไปรษณีย์(ธรรมมดา)";
+                                                break;
+                                        }
+
+                                        switch (oItem.Status)
+                                        {
+                                            case "W":
+                                                status = "รอรับงาน";
+                                                break;
+                                            case "G":
+                                                status = "กำลังดำเนินการ";
+                                                break;
+                                            case "P":
+                                                status = "สำเร็จ";
+                                                break;
+                                            case "C":
+                                                status = "ยกเลิก";
+                                                break;
+                                        }
+
+                                <tr>
+                                    <td>@oItem.Work_ID</td>
+                                    <td>@oItem.Commander_Name</td>
+                                    <td>@oItem.Commander_Department</td>
+                                    <td data-order="@oItem.Commander_Datetime.Value.ToString("yyyyMMdd")">@oItem.Commander_Datetime.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@type</td>
+                                    <td>@status</td>
+                                    <td>@oItem.Recipient_Name - @oItem.Recipient_Code</td>
+                                    @if (oItem.Type_Work == "E" || oItem.Type_Work == "U" || oItem.Type_Work == "G")
+                                    {
+                                        <td>
+                                            <button type="submit" name="postel" value="@oItem.WorkOrder_ID" class="btn btn-info">Submit</button>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <button type="submit" name="id" value="@oItem.ID" class="btn btn-info">Submit</button>
+                                        </td>
+                                    }
+
+                                </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+@Html.Raw(TempData["msg"])
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+    @*Gridview*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#odgvData').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': false,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                },
+                'order':[[0,"desc"]]
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                var tPage = this.search;
+
+                if (tPage == "")
+                    return false;
+
+                tPage = tPage.replace("?", "");
+                tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+                //var radioValue = $("input[name='XVScanType']:checked").val();
+                //pmdoData = {
+                //    XVScanType: radioValue,
+                //    XVSearch: $("#XVSearch").val(),
+                //}
+
+                //$.ajax({
+                //    url: this.href,
+                //    type: 'POST',
+                //    data: pmdoData,
+                //    cache: false,
+                //    async: true,
+                //    error: function (jqXHR, error, errorThrown) {
+                //        //display error
+                //    },
+                //    success: function (data, textStatus, jqXHR) {
+                //        $("body").html(data);
+                //    }
+                //});
+                return false;
+            });
+        });
+
+        $(document).ready(function () {
+            $('#odgvData2').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': false,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                },
+                'order': [[0, "desc"]]
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                var tPage = this.search;
+
+                if (tPage == "")
+                    return false;
+
+                tPage = tPage.replace("?", "");
+                tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+                //var radioValue = $("input[name='XVScanType']:checked").val();
+                //pmdoData = {
+                //    XVScanType: radioValue,
+                //    XVSearch: $("#XVSearch").val(),
+                //}
+
+                //$.ajax({
+                //    url: this.href,
+                //    type: 'POST',
+                //    data: pmdoData,
+                //    cache: false,
+                //    async: true,
+                //    error: function (jqXHR, error, errorThrown) {
+                //        //display error
+                //    },
+                //    success: function (data, textStatus, jqXHR) {
+                //        $("body").html(data);
+                //    }
+                //});
+                return false;
+            });
+        });
+
+    </script>
+}
+
+

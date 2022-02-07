@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="KPIModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="USERINFO">
+          <Key>
+            <PropertyRef Name="USR_KEY" />
+          </Key>
+          <Property Name="USR_KEY" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USR_EMP" Type="int" Nullable="false" />
+          <Property Name="USR_NO" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="USR_INTL" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="USR_NAME" Type="nvarchar" MaxLength="40" Nullable="false" />
+          <Property Name="USR_SURNME" Type="nvarchar" MaxLength="40" Nullable="false" />
+          <Property Name="USR_E_NAME" Type="nvarchar" MaxLength="120" />
+          <Property Name="USR_LOGIN" Type="nvarchar" MaxLength="100" />
+          <Property Name="USR_PASSWORD" Type="nvarchar" MaxLength="100" />
+          <Property Name="USR_LMAIL" Type="nvarchar" MaxLength="100" />
+          <Property Name="USR_JCODE" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="USR_JTHAIDESC" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="USR_DCODE" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="USR_DTHAIDESC" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="USR_BTHAIDESC" Type="nvarchar" MaxLength="120" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="KPIModelStoreContainer">
+          <EntitySet Name="USERINFO" EntityType="Self.USERINFO" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="KPIModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="USERINFO">
+          <Key>
+            <PropertyRef Name="USR_KEY" />
+          </Key>
+          <Property Name="USR_KEY" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USR_EMP" Type="Int32" Nullable="false" />
+          <Property Name="USR_NO" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_INTL" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_NAME" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_SURNME" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_E_NAME" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="USR_LOGIN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="USR_PASSWORD" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="USR_LMAIL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="USR_JCODE" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_JTHAIDESC" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_DCODE" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_DTHAIDESC" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USR_BTHAIDESC" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="KPIEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="USERINFOes" EntityType="Self.USERINFO" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="KPIModelStoreContainer" CdmEntityContainer="KPIEntities">
+          <EntitySetMapping Name="USERINFOes">
+            <EntityTypeMapping TypeName="KPIModel.USERINFO">
+              <MappingFragment StoreEntitySet="USERINFO">
+                <ScalarProperty Name="USR_KEY" ColumnName="USR_KEY" />
+                <ScalarProperty Name="USR_EMP" ColumnName="USR_EMP" />
+                <ScalarProperty Name="USR_NO" ColumnName="USR_NO" />
+                <ScalarProperty Name="USR_INTL" ColumnName="USR_INTL" />
+                <ScalarProperty Name="USR_NAME" ColumnName="USR_NAME" />
+                <ScalarProperty Name="USR_SURNME" ColumnName="USR_SURNME" />
+                <ScalarProperty Name="USR_E_NAME" ColumnName="USR_E_NAME" />
+                <ScalarProperty Name="USR_LOGIN" ColumnName="USR_LOGIN" />
+                <ScalarProperty Name="USR_PASSWORD" ColumnName="USR_PASSWORD" />
+                <ScalarProperty Name="USR_LMAIL" ColumnName="USR_LMAIL" />
+                <ScalarProperty Name="USR_JCODE" ColumnName="USR_JCODE" />
+                <ScalarProperty Name="USR_JTHAIDESC" ColumnName="USR_JTHAIDESC" />
+                <ScalarProperty Name="USR_DCODE" ColumnName="USR_DCODE" />
+                <ScalarProperty Name="USR_DTHAIDESC" ColumnName="USR_DTHAIDESC" />
+                <ScalarProperty Name="USR_BTHAIDESC" ColumnName="USR_BTHAIDESC" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

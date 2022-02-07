@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b1462e64082a4de58f4979b34a8c982e" Name="Diagram1" ZoomLevel="55">
+        <EntityTypeShape EntityType="DBS_WGE_Model.LocationTest" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.OCRD" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.OHEM" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.OINV" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.ORIN" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.OSLP" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_CREDITNOTE" Width="1.5" PointX="2.75" PointY="2" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_DOCUMENT" Width="1.5" PointX="13.375" PointY="6.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_OTHER" Width="1.5" PointX="13.375" PointY="10.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_MAP" Width="1.5" PointX="15.375" PointY="0.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_RECEIVE" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_BILLING" Width="1.5" PointX="15.375" PointY="4.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.OCTG" Width="1.5" PointX="15.375" PointY="10.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.OUDP" Width="1.5" PointX="17.375" PointY="11.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_BILL_BANK" Width="1.5" PointX="3.375" PointY="6.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_BILL_GENERAL" Width="1.5" PointX="17.375" PointY="0.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_BILL_POSTOFFICE" Width="1.5" PointX="13.375" PointY="17.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_BILL_WORKORDER" Width="1.5" PointX="17.375" PointY="3.75" />
+        <EntityTypeShape EntityType="DBS_WGE_Model.C_MCT_POSTOFFICE_REF" Width="1.5" PointX="17.375" PointY="14.75" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

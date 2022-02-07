@@ -1,0 +1,156 @@
+﻿<form id="form1" runat="server">
+    <div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var checkbox;
+        var remark;
+        var name;
+        var code;
+        var job;
+
+        function getLocation() {
+
+            job = document.getElementById("order").value;
+            code = document.getElementById("Code").innerText;
+            name = document.getElementById("Name").innerText;
+            remark = document.getElementById("Remark").value;
+            checkbox = $('input[name="radio0"]:checked').val();
+
+
+            var message1 = "ยืนยันการบันทึก?";
+            var r = confirm(message1);
+
+            if (r == true) {
+                if (name != "" && checkbox != null) {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition, showError);
+                    }
+                    else { alert("Geolocation is not supported by this browser."); }
+                }
+                else {
+                    alert("ตัวเลือกห้ามว่าง!!");
+                }
+            }
+            else {
+
+            }           
+        }
+        
+        function showPosition(position) {
+
+            $.ajax({
+                url: '@Url.Action("getOnline","GeoCoding")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+
+                    location: "Latitude: " + position.coords.latitude +
+                        ",Longitude: " + position.coords.longitude + ",Accuracy:" + position.coords.accuracy + ","
+                        + name + "," + code + "," + checkbox ,
+                    Remark: remark,
+                    ID: job
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    //alert('Success!');
+                    window.location.href = '/Home/Index/';
+                }
+            });
+            
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+
+            window.location.href = '/GeoCoding/Online/';
+        }
+
+    </script>
+</form>
+
+<div class="row">
+    <div class="col-sm-6">
+
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">งานออนไลน์</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="box-body">
+                <div class="form-group">
+                    <br />
+                    <span style="display:none" id="Name">@Session["Name"].ToString()</span>
+                    <span style="display:none" id="Code">@Session["Code"].ToString()</span>
+                    <div class="form-group">
+                        <label for="inputEmail3">เลข Order :</label>
+                        <br />
+                        <input type="text" value="#" name="id" id="order" placeholder="ระบุเลข Order" />
+                    </div>
+                    <label>
+                        ขนาด :
+                    </label>
+                    <div class="radio">
+                        <label>
+                            &nbsp;
+                            <input type="radio" name="radio0" id="radio0" value="B" onclick="javascript:yesnoCheck();">
+                            B (54)
+                        </label>
+                        <label>
+                            &nbsp;
+                            <input type="radio" name="radio0" id="radio1" value="2B" onclick="javascript:yesnoCheck();">
+                            2B (81)
+                        </label>
+                        <label>
+                            &nbsp;
+                            <input type="radio" name="radio0" id="radio2" value="D" onclick="javascript:yesnoCheck();">
+                            D (86)
+                        </label>
+                        <label>
+                            &nbsp;
+                            <input type="radio" name="radio0" id="radio3" value="2D" onclick="javascript:yesnoCheck();">
+                            2D (117)
+                        </label>
+                    </div>
+                    @{
+                        DateTime mtyr = DateTime.Now;
+                        string date = mtyr.ToString("dd/MM/yyyy");
+                    }
+                    <div class="form-group">
+                        <label>วันที่ส่ง :</label>
+                        <input type="text" name="BW.date" class="form-control" id="branch" value="@date" readonly autocomplete="off">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>หมายเหตุ</label>
+                    <textarea class="form-control" name="Remark" id="Remark" rows="5" placeholder="หมายเหตุ..."></textarea>
+                </div>
+                
+            </div>            
+            <div class="form-group box-footer">
+                <button type="submit" class="btn btn-info " onclick="getLocation();">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>

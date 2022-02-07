@@ -1,0 +1,354 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<form id="form1" runat="server">
+    <div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var name;
+        var code;
+        var arr = [];
+        //var id;
+
+        function getLocation() {
+
+            name = document.getElementById("Name").innerText;
+            code = document.getElementById("Code").innerText;
+            //id = document.getElementById("id1").innerText;
+
+            if (name != "") {
+                ajax();
+            }
+            else {
+                alert("text not empty");
+            }
+        }
+
+        function ajax() {
+
+            $.ajax({
+                url: '@Url.Action("DeleteBilling2", "DeleteDoc")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+                    id1: name + "," + code + "," + arr
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    alert("Success!");
+                    window.location.href = '/DeleteDoc/DeleteBilling/';
+                }
+            });
+
+
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+
+        function myFunction() {  //ค้นหา
+            var input, input2,input3, filter, filter2,filter3, table, tr, td, td2,td3, i, txtValue, txtValue2,txtValue3;
+            input = document.getElementById("myInput");
+            input2 = document.getElementById("myInput2");
+            input3 = document.getElementById("myInput3");
+            filter = input.value.toUpperCase();
+            filter2 = input2.value.toUpperCase();
+            filter3 = input3.value.toUpperCase();
+            table = document.getElementById("odgvData");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                td2 = tr[i].getElementsByTagName("td")[2];
+                td3 = tr[i].getElementsByTagName("td")[4];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    txtValue2 = td2.textContent || td2.innerText;
+                    txtValue3 = td3.textContent || td3.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1 && txtValue2.toUpperCase().indexOf(filter2) > -1 && txtValue3.toUpperCase().indexOf(filter3) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function Clear() {  //เคลียร์
+            document.getElementById("myInput").value = "";
+            document.getElementById("myInput2").value = "";
+            document.getElementById("myInput3").value = "";
+
+            myFunction();
+        }
+
+        function myCheckBox() {
+            //Reference the Table.
+            var grid = document.getElementById("odgvData");
+
+            //Reference the CheckBoxes in Table.
+            var checkBoxes = grid.getElementsByTagName("input");
+            var sum = parseFloat("0");
+            var checkpoint = parseFloat("0");
+            var i = parseInt("0");
+            arr = [];
+
+            var Tmessage = "";
+            var Hmessage = "ยืนยันการบันทึก?\n\n";
+            var message = "";
+
+            //Loop through the CheckBoxes.
+            for (var i = 1; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    var row4 = row.cells[5].innerHTML //
+                    var tot = row4.replace(/,/g, ''); //
+
+                    message += row.cells[1].innerText;
+                    message += "  " + row.cells[2].innerText;
+                    message += " " + row.cells[3].innerText;
+                    message += "  " + row.cells[5].innerHTML;
+                    message += "\n";
+                    sum += parseFloat(tot); //
+                    checkpoint += parseInt(1);
+                    arr.push(row.cells[1].innerText);
+                }
+            }
+
+            var totResult = currencyFormat(sum); //
+
+            Tmessage += "รายการทั้งหมด " + checkpoint + " รายการ \n";
+            Tmessage += "ยอดรวมทั้งหมด " + totResult + " บาท \n\n";
+
+            message = Hmessage + Tmessage + message
+
+            var r = confirm(message);
+
+            if (r == true) {
+                getLocation();
+            }
+            else {
+
+            }
+        }
+
+        function currencyFormat(num) {
+            return  num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        }
+
+        function toggle(checktoggle) {
+
+            var checkboxes = new Array();
+            checkboxes = document.getElementsByName('product-status');
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    if (checkboxes[i].parentNode.parentNode.style.display != "none") {
+                        checkboxes[i].checked = checktoggle.checked;
+                    }
+                }
+            }
+        }
+
+        function yesnoCheck() {
+            if (document.getElementById('optionsRadios1').checked) {
+                document.getElementById('ifselectc').style.display = 'block';
+                document.getElementById('ifselectcp').style.display = 'none';
+            }
+            else {
+                document.getElementById('ifselectc').style.display = 'none';
+                document.getElementById('ifselectcp').style.display = 'block';
+            }
+
+            if (document.getElementById('checkbox1').checked) {
+                document.getElementById('ifselectcp1').style.display = 'block';
+                document.getElementById('ifselectcp2').style.display = 'block';
+            }
+            else{
+                document.getElementById('ifselectcp1').style.display = 'none';
+                document.getElementById('ifselectcp2').style.display = 'none';
+            }
+        }
+
+    </script>
+</form>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">ลบเอกสารวางบิล</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+
+                    @using (Html.BeginForm("DeleteBilling"
+                                , "DeleteDoc"
+                                , FormMethod.Post
+                                , new { id = "oForm" }))
+                    {
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios1" id="optionsRadios1" value="c" checked onclick="javascript:yesnoCheck();">
+                                ( C )
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios1" id="optionsRadios2" value="cp" onclick="javascript:yesnoCheck();">
+                                ( CP )
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="checkbox1" id="checkbox1" value="filter" onclick="javascript:yesnoCheck();">
+                                ( เพิ่มการกรอง )
+                            </label>
+                        </div>
+                        <div id="ifselectc" style="display:block">
+                            <div class="form-group">
+                                <label for="inputEmail3">รหัสลูกค้า(C)</label>
+                                <input type="text" name="cardcodeno" class="form-control" id="inputname" placeholder="รหัสลูกค้า">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail3">ชื่อลูกค้า(C)</label>
+                                <input type="text" name="cardname" class="form-control" id="inputname" placeholder="ชื่อลูกค้า">
+                            </div>
+                        </div>
+                        <div id="ifselectcp" style="display:none">
+                            <div class="form-group">
+                                <label for="inputEmail3">รหัสลูกค้า(CP)</label>
+                                <input type="text" name="cpcode" class="form-control" id="inputname" placeholder="CPXXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail3">ชื่อลูกค้า(CP)</label>
+                                <input type="text" name="cpname" class="form-control" id="inputname" placeholder="ชื่อลูกค้า CP">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info ">ค้นหา</button>
+                    }
+                    <br />
+
+                    <div class="form-group col-sm-12">
+                        <input style="width:160px;margin-left:-15px;" class="form-control col-sm-12" type="text" id="myInput" onkeyup="myFunction()" placeholder="ค้นหาจากเลขที่บิล..." title="Type in a name">
+                    </div>
+                    <div id="ifselectcp1" class="form-group col-sm-12" style="display:none">
+                        <input style="width:160px;margin-left:-15px;" class="form-control col-sm-12" type="text" id="myInput2" onkeyup="myFunction()" placeholder="ค้นหาจากรหัสลูกค้า..." title="Type in a name">
+                    </div>
+                    <div id="ifselectcp2" class="form-group col-sm-12" style="display:none">
+                        <input style="width:160px;margin-left:-15px;" class="form-control col-sm-12" type="text" id="myInput3" onkeyup="myFunction()" placeholder="ค้นหาจากวันที่..." title="Type in a name">
+                    </div>
+                    <div id="" class="" style="display:block">
+                        <button style="width:100px;margin-right:5px;" class="btn btn-info col-sm-6" type="submit" onclick="Clear();">ล้างการค้นหา</button>
+                        <button style="width:70px;" class="btn btn-info col-sm-6" type="submit" onclick="myCheckBox();">ลบ</button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListBilling != null && Model.ListBilling.Count > 0)
+                {
+                    <div class="box-footer table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th><input style="height:18px;width:20px;" type="checkbox" onClick="toggle(this)" />All</th>
+                                    <th>เลขที่บิล</th>
+                                    <th>รหัสลูกค้า</th>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>วันที่</th>
+                                    <th>ยอดรวม(บาท)</th>
+                                    <th>ผู้บันทึก</th>
+                                    <th>เลือก</th>
+                                    <th>หมายเหตุ</th>
+                                    <th></th>
+                                    <th style="display:none" id="Name">@Session["Name"]</th>
+                                    <th style="display:none" id="Code">@Session["Code"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListBilling != null && Model.ListBilling.Count > 0)
+                                {
+                                    foreach (var oItem in Model.ListBilling)
+                                    {
+
+                                        decimal a = oItem.Total ?? 0;
+                                        //var b = Math.Round(a,2);
+                                        var b = string.Format("{0:n}", Math.Round(a, 2));
+
+                                        string c = oItem.DateBill.Value.ToString("dd/MM/yyyy");
+
+                                        string d = "";
+
+                                        switch (oItem.TypeID)
+                                        {
+                                            case "0":
+                                                d = "ครบสมบูรณ์";
+                                                break;
+                                            case "1":
+                                                d = "ส่งสินค้าไม่ครบ";
+                                                break;
+                                            case "2":
+                                                d = "ขาด PO";
+                                                break;
+                                            case "3":
+                                                d = "ขาดลายเซ็นต์";
+                                                break;
+                                            case "4":
+                                                d = "อื่นๆ ระบุ";
+                                                break;
+                                            case "5":
+                                                d = "วางบิล(โอนเงิน)";
+                                                break;
+                                            case "6":
+                                                d = "วางบิลพร้อมเก็บเงิน";
+                                                break;
+
+                                            default:
+                                                // code block
+                                                break;
+                                        }
+
+                                        <tr>
+                                            <td><input style="height:18px;width:20px;" type="checkbox" name="product-status" id="product-status" /></td>
+                                            <td>@oItem.InvNo</td>
+                                            <td>@oItem.CardCode</td>
+                                            <td>@oItem.CardName</td>
+                                            <td>@c</td>
+                                            <td align="right">@b</td>
+                                            <td>@oItem.Name</td>
+                                            <td>@d</td>
+                                            <td>@oItem.Remark</td>
+                                            <td style="display:none" id="id1">@oItem.ID</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>

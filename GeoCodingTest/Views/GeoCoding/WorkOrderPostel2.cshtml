@@ -1,0 +1,1162 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+
+    <head>
+        <style>
+
+            input,
+            select,
+            textarea {
+                max-width: 100%
+            }
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            /* Button used to open the contact form - fixed at the bottom of the page */
+            .open-button {
+                background-color: #555;
+                color: white;
+                padding: 16px 20px;
+                border: none;
+                cursor: pointer;
+                opacity: 0.8;
+                position: fixed;
+                bottom: 23px;
+                right: 28px;
+                width: 280px;
+            }
+
+            /* The popup form - hidden by default */
+            .form-popup {
+                display: none;
+                position: fixed;
+                bottom: 0;
+                right: 15px;
+                border: 3px solid #f1f1f1;
+                z-index: 9;
+            }
+
+            /* Add styles to the form container */
+            .form-container {
+                max-width: 300px;
+                padding: 10px;
+                background-color: white;
+            }
+
+                /* Full-width input fields */
+                .form-container input[type=text], .form-container input[type=password] {
+                    width: 100%;
+                    padding: 15px;
+                    margin: 5px 0 22px 0;
+                    border: none;
+                    background: #f1f1f1;
+                }
+
+                    /* When the inputs get focus, do something */
+                    .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+                        background-color: #ddd;
+                        outline: none;
+                    }
+
+                /* Set a style for the submit/login button */
+                .form-container .btn {
+                    background-color: #04AA6D;
+                    color: white;
+                    padding: 16px 20px;
+                    border: none;
+                    cursor: pointer;
+                    width: 100%;
+                    margin-bottom: 10px;
+                    opacity: 0.8;
+                }
+
+                /* Add a red background color to the cancel button */
+                .form-container .cancel {
+                    background-color: red;
+                }
+
+                /* Add some hover effects to buttons */
+                .form-container .btn:hover, .open-button:hover {
+                    opacity: 1;
+                }
+        </style>
+    </head>
+        @if (Model.ListBW2 != null)
+        {
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+
+                    <div class="box box-danger">
+
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><label style="font-weight:700">งานไปรษณีย์</label></h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        @using (Html.BeginForm("getWorkOrder"
+                                       , "GeoCoding"
+                                       , FormMethod.Post
+                                       , new { enctype = "multipart/form-data" }))
+                        {
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="form-group col-sm-12 col-md-12">
+                                    <label class="col-sm-12 col-md-1" style="text-align:center">ชื่อผู้สั่งงาน</label>
+                                    <div class="col-sm-12 col-md-2">
+                                        <input type="text" name="BW.Commander_Name" class="form-control" id="" value="@Model.ListBW2[0].Commander_Name" maxlength="50" readonly>
+                                    </div>
+                                    <div style="display:none">
+                                        <input type="text" name="BW.ID" class="form-control" id="" value="@Model.ListBW2[0].ID" readonly>
+                                    </div>
+                                    <div style="display:none">
+                                        <input type="text" name="BW.Commander_Code" class="form-control" id="" value="@Model.ListBW2[0].Commander_Code" readonly>
+                                    </div>
+                                    <label class="col-sm-12 col-md-1" style="text-align:center">หน่วยงาน</label>
+                                    <div class="col-sm-12 col-md-2">
+                                        <input type="text" name="BW.Commander_Department" class="form-control" readonly value="@Model.ListBW2[0].Commander_Department" id="" maxlength="50" autocomplete="off">
+                                    </div>
+                                    <label class="col-sm-12 col-md-1" style="text-align:center">วันที่แจ้งใช้งาน</label>
+                                    <div class="col-sm-12 col-md-2">
+                                        <input type="text" name="BW.date" class="form-control" id="" value="@Model.ListBW2[0].Commander_Datetime.Value.ToString("dd/MM/yyyy")" readonly autocomplete="off">
+                                    </div>
+                                    <label class="col-sm-12 col-md-1" style="text-align:center">เวลา</label>
+                                    <div class="col-sm-12 col-md-2">
+                                        <input type="text" name="BW.time" class="form-control" value="@Model.ListBW2[0].Commander_Datetime.Value.ToString("HH:mm")" id="" readonly>
+                                        <input hidden id="time" />
+                                        <input hidden type="text" name="BW.Type_Work" value="@Model.type_wk" />
+                                        <input hidden type="text" name="BW.WorkOrder_Id" value="@Model.Workorder" />
+                                        <input hidden type="text" name="BW.round" value="@Model.ListBW2[0].round" />
+                                        <input hidden type="text" name="BW.mtyear" value="@Model.ListBW2[0].mtyear" />
+                                        <input hidden type="text" name="BW.print_date" value="@Model.ListBW2[0].print_date" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                @{
+                                    string recipeintdatetime = (Model.ListBW2[0].Recipient_Datetime != null) ? Model.ListBW2[0].Recipient_Datetime.Value.ToString("dd/MM/yyyy HH:mm") : string.Empty;
+                                    string printdate = (Model.ListBW2[0].print_date != null) ? Model.ListBW2[0].print_date.Value.ToString("yyyy-MM-dd") : string.Empty;
+
+                                }
+
+                                <div class="form-group col-sm-12 col-md-12">
+                                    <div class="col-sm-12 col-md-3">
+                                    </div>
+                                    <label class="col-sm-12 col-md-1" style="text-align:center">รอบ - เดือน/ปี</label>
+                                    <div class="col-sm-12 col-md-2">
+                                        <input type="text" name="" class="form-control" value="@Model.ListBW2[0].round - @Model.ListBW2[0].mtyear" id="" readonly>
+                                    </div>
+                                    <label class="col-sm-12 col-md-1" style="text-align:center">ลงชื่อผู้รับ</label>
+                                    <div class="col-sm-12 col-md-2">
+                                        <input type="text" name="BW.Recipient_Name" class="form-control" value="@Model.ListBW2[0].Recipient_Name" id="" readonly>
+                                    </div>
+                                    <label class="col-sm-12 col-md-1" style="text-align:center">วันที่ / เวลา</label>
+                                    <div class="col-sm-12 col-md-2">
+                                        <input type="text" name="BW.Recipient_Datetime" class="form-control" value="@recipeintdatetime" id="" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th style="text-align:center;width:20%">งานที่ต้องดำเนินการ</th>
+                                            <th style="text-align:center">ชื่อ</th>
+                                            <th style="text-align:center;width:10%">รหัสไปรษณีย์</th>
+                                            <th style="text-align:center">เลข Tracking</th>
+                                            <th style="text-align:center">เลข EMS(ตอบรับ)</th>
+                                            <th style="text-align:center;width:10%">ค่าบริการ</th>
+                                            <th style="display:none"></th>
+                                            <th style="display:none"></th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @{
+                                            int i = 0;
+                                        }
+
+                                        @if (Model.ListPO1 != null)
+                                        {
+                                            foreach (var item in Model.ListPO1)
+                                            {
+
+                                                string type = string.Empty;
+
+                                                switch (item.Type)
+                                                {
+                                                    case "normal":
+                                                        type = "ธรรมดา";
+                                                        break;
+                                                    case "register":
+                                                        type = "ลงทะเบียน";
+                                                        break;
+                                                    case "ems":
+                                                        type = "EMS";
+                                                        break;
+                                                    case "emsar":
+                                                        type = "EMS – AR (ตอบรับ)";
+                                                        break;
+                                                    default:
+                                                        type = "-- เลือก --";
+                                                        break;
+                                                }
+
+                                                string idcode = "BP[" + i + "].ID";
+                                                string typen = "BP[" + i + "].Type";
+                                                string namen = "BP[" + i + "].Name";
+                                                string posteln = "BP[" + i + "].Postel";
+                                                string itemcoden = "BP[" + i + "].Itemcode";
+                                                string EMSRevn = "BP[" + i + "].EMSRev";
+                                                string pricen = "BP[" + i + "].Price";
+                                                string AC = "BP[" + i + "].AC_code";
+                                                string wk = "BP[" + i + "].WorkOrder_ID";
+
+
+
+
+                                                decimal price = item.Price ?? 0;
+
+
+
+                                                <tr>
+
+                                                    <td>
+                                                        <select class="form-control postel" name="@typen" id="@typen" disabled>
+                                                            <option value="@item.Type" selected="selected" hidden>@type</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="@namen" id="" class="form-control postel" disabled value="@item.Name" maxlength="100">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" name="@posteln" id="" class="form-control postel" disabled value="@item.Postel" onkeypress="if(this.value.length==5) return false;">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" style="text-transform: uppercase" name="@itemcoden" id="" class="form-control itemcode" disabled value="@item.Itemcode" maxlength="20">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" style="text-transform: uppercase" name="@EMSRevn" id="" class="form-control emsrev" disabled value="@item.EMSRev" maxlength="20">
+                                                    </td>
+                                                    @if (price == 0)
+                                                    {
+                                                        <td>
+                                                            <input type="number" name="@pricen" id="" class="form-control price" value="" disabled onkeypress="if(this.value.length==8)  return false;">
+                                                        </td>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>
+                                                            <input type="number" name="@pricen" id="" class="form-control price" value="@price" disabled onkeypress="if(this.value.length==8) return false;">
+                                                        </td>
+                                                    }
+                                                    <td style="display:none">
+                                                        <input type="number" style="display:none" name="@wk" id="" class="form-control" value="@item.WorkOrder_ID">
+                                                    </td>
+                                                    <td style="display:none">
+                                                        <input type="number" style="display:none" name="@idcode" id="" class="form-control" value="@item.ID">
+                                                    </td>
+                                                    <td align="center">
+                                                        <button type="button" disabled onclick="SomeDeleteRowFunction(this);" class="form-control delbtn">
+                                                            <img src="https://www.img.in.th/images/71b99e23a03304dba0df238d7318cfbe.png" alt="71b99e23a03304dba0df238d7318cfbe.png" border="0" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+
+                                                i++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <select class="form-control postel" name="BP[0].Type" id="" disabled>
+                                                        <option value="" selected="selected">-- เลือก --</option>
+                                                        <option value="normal">ธรรมดา</option>
+                                                        <option value="register">ลงทะเบียน</option>
+                                                        <option value="ems">EMS</option>
+                                                        <option value="emsar">EMS – AR (ตอบรับ)</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="BP[0].Name" id="" disabled class="form-control postel" value="" maxlength="100">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="BP[0].Postel" id="" disabled class="form-control postel" value="" onkeypress="if(this.value.length==5) return false;">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="BP[0].Itemcode" style="text-transform: uppercase" id="" disabled class="form-control itemcode" value="" maxlength="20">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="BP[0].EMSRev" style="text-transform: uppercase" id="" disabled class="form-control itemcode" value="" maxlength="20">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="BP[0].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" disabled>
+                                                </td>
+
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                    <tfoot style="border-left:hidden;border-right:hidden;border-bottom:hidden">
+
+                                        <tr>
+                                            <td colspan="6">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <label>รายละเอียดเพิ่มเติม</label>
+                                                    <textarea name="BW.Remark" rows="3" id="remark" class="form-control" disabled maxlength="600">@Model.ListBW2[0].Remark</textarea>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                    <label>รายละเอียดเพิ่มเติม (admin)</label>
+                                                    <textarea name="BW.RemarkAdmin" id="remarkadmin" rows="3" class="form-control" disabled maxlength="600">@Model.ListBW2[0].RemarkAdmin</textarea>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @if (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10")
+                                        {
+                                            <tr>
+                                                <td colspan="6">
+                                                    <div class="col-sm-12 col-md-6">
+                                                        <label>วันที่ส่ง</label>
+                                                        <br />
+                                                        <input type="date" name="BW.date_print" value="@printdate" id="">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        @{
+                                            string status1 = string.Empty;
+
+                                            switch (@Model.ListBW2[0].Status)
+                                            {
+                                                case "W":
+                                                    status1 = "รอรับงาน";
+                                                    break;
+                                                case "G":
+                                                    status1 = "กำลังดำเนินการ";
+                                                    break;
+                                                case "P":
+                                                    status1 = "สำเร็จ";
+                                                    break;
+                                                case "C":
+                                                    status1 = "ยกเลิก";
+                                                    break;
+                                            }
+                                        }
+
+                                        @if (Model.ListBW2[0].Status == "G" && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9"))
+                                        {
+                                            <tr>
+                                                <td colspan="6">
+                                                    <div class="col-sm-12 col-md-2" style="display:block" id="statusjob">
+                                                        <label>อัพเดตสถานะของงาน</label>
+                                                        <select name="BW.Status" class="form-control">
+                                                            <option hidden value="@Model.ListBW2[0].Status">@status1</option>
+                                                            <option value="W">เปลี่ยนคนดำเนินการ</option>
+                                                            <option value="G">กำลังดำเนินการ</option>
+                                                            <option value="P">สำเร็จ</option>
+
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="box box-footer">
+                                @if (Session["Code"].ToString() == "45002" || Session["Code"].ToString() == "64037")
+                                {
+                                    <div style="align-content:center" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            @if (Model.MS_1 == "Y")
+                                            {
+                                                <label>Sompong Montien - เข้ามาดูแล้ว</label><br />
+                                            }
+                                            else
+                                            {
+
+                                            }
+                                            @if (Model.MS_2 == "Y")
+                                            {
+                                                <label>Maetee Jundang - เข้ามาดูแล้ว</label><br />
+                                            }
+                                            else
+                                            {
+
+                                            }
+                                            @if (Model.MS_3 == "Y")
+                                            {
+                                                <label>Chairat Kanha - เข้ามาดูแล้ว</label><br />
+                                            }
+                                            else
+                                            {
+
+                                            }
+                                            @if (Model.MS_4 == "Y")
+                                            {
+                                                <label>Sommai Detphutsa - เข้ามาดูแล้ว</label><br />
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-sm-12 col-md-12" style="display:none" id="myForm">
+                                <form action="/action_page.php" class="form-container">
+                                    <label><b>เลขที่เริ่มต้น</b></label>
+                                    <input type="text" style="text-transform: uppercase" value="@Model.ListBW2[0].tracking_first" name="BW.tracking_first" onkeypress="if(this.value.length==13) return false;" pattern=".{13,}" title="กรอกเลขไม่ครบ">
+                                    <label><b>เลขที่สุดท้าย</b></label>
+                                    <input type="text" style="text-transform: uppercase" value="@Model.ListBW2[0].tracking_last" name="BW.tracking_last" onkeypress="if(this.value.length==13) return false;" pattern=".{13,}" title="กรอกเลขไม่ครบ">
+                                    <button type="submit" name="BW.button" value="exportsum" class="btn btn-success">ตกลง</button>
+                                    <button type="button" class="btn btn-danger" onclick="closeForm()">ปิด</button>
+                                </form>
+                            </div>
+                            @*
+        <div class="col-sm-12 col-md-12" style="display:none" id="myForm2">
+            <form action="/action_page.php" class="">
+                <label><b>วันที่ส่ง</b></label>
+                <input type="date" value="@Model.ListBW2[0].print_date" name="date">
+                <button type="submit" name="BW.button" value="export" class="btn btn-success">ตกลง</button>
+                <button type="button" class="btn btn-danger" onclick="closeForm2()">ปิด</button>
+            </form>
+        </div>
+                            *@
+
+                            @if (Model.ListBW2[0].Status == "W" || Model.ListBW2[0].Status == "F")
+                            {
+                                if (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10")
+                                {
+                                    <div style="display:block" id="editjob" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                                        </div>
+                                    </div>
+                                    <div style="display:block" id="editjob" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            @*แก้ไข1*@
+                                            <button type="button" class="btn btn-warning" name="button" onclick="editclick('W','A','@Model.type_wk')" role="button">แก้ไข</button>
+                                        </div>
+                                    </div>
+                                    <div style="display:none" id="deletejob" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" class="btn btn-danger" name="BW.button" value="delete" onclick="return confirm('ยืนยันการลบ ?')" role="button">ลบ</button>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:block" id="export" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" class="btn btn-info" name="BW.button" value="export" role="button">Export</button>
+                                        </div>
+                                    </div>
+                                    if (Model.ListBW2[0].Type_Work != "G")
+                                    {
+                                        <div style="display:block" id="export1" class="pull-left">
+                                            <div class="col-sm-12 col-md-12">
+                                                <button type="button" class="btn btn-info" onclick="openForm()">Export ใบสรุป</button>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div style="display:block" id="export1" class="pull-left">
+                                            <div class="col-sm-12 col-md-12">
+                                                <button type="submit" name="BW.button" value="exportsum" class="btn btn-info">Export ใบสรุป</button>
+                                            </div>
+                                        </div>
+
+                                    }
+                                }
+                                else if (Session["Position"].ToString() == "9")
+                                {
+                                    <div style="display:block" id="editjob" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                                        </div>
+                                    </div>
+                                    <div style="display:block" id="export" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" class="btn btn-info" name="BW.button" value="export" role="button">Export</button>
+                                        </div>
+                                    </div>
+                                    <div style="display:block" id="export1" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" class="btn btn-info" name="BW.button" value="exportsum" role="button">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:block" id="editjob" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div style="display:none" id="save" class="pull-right">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="update" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                                    </div>
+                                </div>
+
+                                if (Model.ListBW2[0].Status == "F" && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9"))
+                                {
+
+                                    <div style="display:block" id="acceptjob" class="pull-right">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" class="btn btn-success" name="BW.button" value="acceptjob" onclick="return confirm('ยืนยันการรับงาน ?')" role="button">รับงาน</button>
+                                        </div>
+                                    </div>
+                                }
+                                if (Model.ListBW2[0].Status != "F" && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10"))
+                                {
+
+
+
+                                    <div style="display:block" id="acceptjob" class="pull-right">
+                                        <div class="col-sm-12 col-md-12">
+                                            <input hidden type="text" name="BW.Status" value="F" />
+                                            <button type="submit" class="btn btn-info" name="BW.button" value="roundoff" onclick="return confirm('ยืนยันการรับงาน ?')" role="button">ปิดรอบ</button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            @if (Model.ListBW2[0].Status == "G" && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9"))
+                            {
+
+                                <div style="display:block" id="editjob" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                                    </div>
+                                </div>
+                                <div style="display:block" id="export" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="export" role="button">Export</button>
+                                    </div>
+                                </div>
+                                if (Session["Position"].ToString() == "8")
+                                {
+                                    <div style="display:block" id="export" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="button" class="btn btn-info" onclick="openForm()">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+                                }
+                                else if (Session["Position"].ToString() == "9")
+                                {
+                                    if (Model.ListBW2[0].Type_Work != "G")
+                                    {
+                                        <div style="display:block" id="export1" class="pull-left">
+                                            <div class="col-sm-12 col-md-12">
+                                                <button type="button" class="btn btn-info" onclick="openForm()">Export ใบสรุป</button>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div style="display:block" id="export1" class="pull-left">
+                                            <div class="col-sm-12 col-md-12">
+                                                <button type="submit" name="BW.button" value="exportsum" class="btn btn-info">Export ใบสรุป</button>
+                                            </div>
+                                        </div>
+
+                                    }
+                                }
+                                <div style="display:none" id="save" class="pull-right">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="update" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                                    </div>
+                                </div>
+                                <div style="display:block" id="savejob" class="pull-right">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="updatejob" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.ListBW2[0].Status == "G" && (Session["Position"].ToString() == "10"))
+                            {
+
+                                <div style="display:block" id="editjob" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                                    </div>
+                                </div>
+                                <div style="display:block" id="export" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="export" role="button">Export</button>
+                                    </div>
+                                </div>
+                                if (Model.ListBW2[0].Type_Work != "G")
+                                {
+                                    <div style="display:block" id="export1" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="button" class="btn btn-info" onclick="openForm()">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:block" id="export1" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" name="BW.button" value="exportsum" class="btn btn-info">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+
+                                }
+                                <div style="display:none" id="save" class="pull-right">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="update" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                                    </div>
+                                </div>
+                            }
+                            @if ((Model.ListBW2[0].Status == "P") && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10"))
+                            {
+                                <div style="display:block" id="editjob" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                                    </div>
+                                </div>
+                                <div style="display:block" id="export" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="export" role="button">Export</button>
+                                    </div>
+                                </div>
+                                if (Model.ListBW2[0].Type_Work != "G")
+                                {
+                                    <div style="display:block" id="export1" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="button" class="btn btn-info" onclick="openForm()">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:block" id="export1" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" name="BW.button" value="exportsum" class="btn btn-info">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+
+                                }
+                                <div style="display:block" id="editjob" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        @*แก้ไข1*@
+                                        <button type="button" class="btn btn-warning" name="button" onclick="editclick('W','B','@Model.type_wk')" role="button">แก้ไข</button>
+                                    </div>
+                                </div>
+
+                                <div style="display:none" id="save" class="pull-right">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="updateprice" onclick="return confirm('ยืนยันการบันทึก ?')" role="button">บันทึก</button>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (((Model.ListBW2[0].Status == "P")) && (Session["Position"].ToString() == "9"))
+                            {
+                                <div style="display:block" id="editjob" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="button" class="btn btn-primary" name="button" onclick="myFunction()" role="button">ย้อนกลับ</button>
+                                    </div>
+                                </div>
+                                <div style="display:block" id="export" class="pull-left">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" value="export" role="button">Export</button>
+                                    </div>
+                                </div>
+                                if (Model.ListBW2[0].Type_Work != "G")
+                                {
+                                    <div style="display:block" id="export1" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="button" class="btn btn-info" onclick="openForm()">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:block" id="export1" class="pull-left">
+                                        <div class="col-sm-12 col-md-12">
+                                            <button type="submit" name="BW.button" value="exportsum" class="btn btn-info">Export ใบสรุป</button>
+                                        </div>
+                                    </div>
+
+                                }
+
+                            }
+                        </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+
+                    <div class="box box-danger">
+
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><label style="font-weight:700">งานไปรษณีย์</label></h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        @using (Html.BeginForm("getWorkOrder"
+                                       , "GeoCoding"
+                                       , FormMethod.Post
+                                       , new { enctype = "multipart/form-data" }))
+                        {
+                            <div class="box-body">
+
+                                @{
+                                    short dept = Convert.ToInt16(Session["Department"]);
+                                    string namedepartment = (Model.ListOUDP != null && Model.ListOUDP.Count() > 0) ? Model.ListOUDP.Where(z => z.Code == dept).Select(x => x.Name).FirstOrDefault() : string.Empty;
+                                }
+
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-12">
+                                        <label class="col-sm-12 col-md-1" style="text-align:center">ชื่อผู้สั่งงาน</label>
+                                        <div class="col-sm-12 col-md-2">
+                                            <input type="text" name="BW.Commander_Name" class="form-control" id="" value="@Session["Name"].ToString()" maxlength="50" readonly>
+                                        </div>
+                                        <div style="display:none">
+                                            <input type="text" name="BW.Commander_Code" class="form-control" id="" value="@Session["Code"].ToString()" readonly>
+                                        </div>
+                                        <label class="col-sm-12 col-md-1" style="text-align:center">หน่วยงาน</label>
+                                        <div class="col-sm-12 col-md-2">
+                                            <input type="text" name="BW.Commander_Department" class="form-control" readonly value="@namedepartment" id="" maxlength="50" autocomplete="off">
+                                        </div>
+                                        <label class="col-sm-12 col-md-1" style="text-align:center">วันที่แจ้งใช้งาน</label>
+                                        <div class="col-sm-12 col-md-2">
+                                            <input type="text" name="BW.date" class="form-control" id="" value="@Model.date.ToString("dd/MM/yyyy")" readonly autocomplete="off">
+                                        </div>
+                                        <label class="col-sm-12 col-md-1" style="text-align:center">เวลา</label>
+                                        <div class="col-sm-12 col-md-2">
+                                            <input type="text" name="BW.time" class="form-control" id="time" readonly>
+                                            <input hidden type="text" name="BW.Type_Work" value="P" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                        <thead>
+                                            <tr role="row">
+                                                <th style="text-align:center;width:20%">งานที่ต้องดำเนินการ</th>
+                                                <th style="text-align:center">ชื่อ</th>
+                                                <th style="text-align:center;width:10%">รหัสไปรษณีย์</th>
+                                                <th style="text-align:center">เลข Tracking</th>
+                                                <th style="text-align:center">เลข EMS(ตอบรับ)</th>
+                                                <th style="text-align:center;width:10%">ค่าบริการ</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select class="form-control postel" name="BP[0].Type" id="">
+                                                        <option value="" selected="selected">-- เลือก --</option>
+                                                        <option value="normal">ธรรมดา</option>
+                                                        <option value="register">ลงทะเบียน</option>
+                                                        <option value="ems">EMS</option>
+                                                        <option value="emsar">EMS – AR (ตอบรับ)</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="BP[0].Name" id="" class="form-control postel" value="" maxlength="100">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="BP[0].Postel" id="" class="form-control postel" value="" onkeypress="if(this.value.length==5) return false;">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="BP[0].Itemcode" id="" class="form-control" value="" maxlength="20" disabled>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="BP[0].EMSRev" id="" class="form-control" value="" maxlength="20" disabled>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="BP[0].Price" id="" class="form-control" value="" onkeypress="if(this.value.length==8) return false;" disabled>
+                                                </td>
+                                                <td>
+                                                    <input type="number" style="display:none" name="BP[0].AC_code" id="" class="form-control price" value="" disabled>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot style="border-left:hidden;border-right:hidden;border-bottom:hidden">
+                                            <tr>
+                                                <td colspan="6">
+                                                    <div class="col-sm-12 col-md-6">
+                                                        <label>รายละเอียดเพิ่มเติม</label>
+                                                        <textarea name="BW.Remark" rows="3" class="form-control" maxlength="600"></textarea>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                            <div class="box box-footer">
+                                <div class="pull-right">
+                                    <div class="col-sm-12 col-md-12">
+                                        <button type="submit" class="btn btn-info" name="BW.button" onclick="return confirm('ยืนยันการบันทึก ?')" value="add" role="button">บันทึก</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+        </form>
+
+        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" language="javascript">
+
+    var date = new Date();
+    date.setHours(date.getHours() + 7);
+    var currentTime = date.toISOString().substring(11, 16);
+    document.getElementById('time').value = currentTime;
+
+
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+        function openForm2() {
+            document.getElementById("myForm2").style.display = "block";
+        }
+
+        function closeForm2() {
+            document.getElementById("myForm2").style.display = "none";
+        }
+
+    let i = 1;
+    let z = 0;
+
+            $(document).keydown(function (e) {
+                if (e.keyCode == 17) {
+                    var index = $('.price').index(document.activeElement) - 1;
+                    $('.price').eq(index).focus();
+                    // Do something here if the popup is open
+                    //alert("dd")
+                    
+
+                }
+            });
+    $(window).ready(function () {
+        $("#form-id").on("keypress", function (event) {
+            console.log("aaya");
+            var keyPressed = event.keyCode || event.which;
+            if (keyPressed === 13) {
+                var index = $('.price').index(document.activeElement) + 1;
+                $('.price').eq(index).focus();
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+
+    function myFunction() {
+            window.location.href = '@Url.Action("WorkList","GeoCoding")'
+        }
+    function addRow(x, y) {
+
+        if (z == 0 && x != null && x != 'undefined') {
+            i = x;
+            z = z + 1;
+        }
+        if (y == 'E') {
+            var test = '<tr id="">'
+                + '<td><select class="form-control" name="BP[' + i + '].Type" id=""><option value="" selected="selected" > --เลือก --</option><option value="ems">EMS</option><option value="emsar">EMS – AR (ตอบรับ)</option></select></td>'
+                + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20"  id=""></td>'
+                + '<td><input type="number" name="BP[0].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" disabled></td>'
+                + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                + '<td><input type="number" style="display:none" name="BP[' + i + ']" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;"></td>';
+            $("#odgvData").append(test);
+
+            i = i + 1;
+
+        }
+        else if (y == 'U') {
+            var test = '<tr id="">'
+                + '<td><select class="form-control" name="BP[' + i + '].Type" id=""><option value="register" selected="selected" hidden>ลงทะเบียน</option></select></td>'
+                + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20" id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20" disabled id=""></td>'
+                + '<td><input type="number" name="BP[' + i + '].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;"></td>'
+                + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                + '<td><input type="number" style="display:none" name="BP[' + i + ']" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;"></td>';
+            $("#odgvData").append(test);
+
+            i = i + 1;
+
+        }
+        else if (y == 'G') {
+            var test = '<tr id="">'
+                + '<td><select class="form-control" name="BP[' + i + '].Type" id=""><option value="normal" selected="selected" hidden>ธรรมดา</option></select></td>'
+                + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20" disabled id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20" disabled id=""></td>'
+                + '<td><input type="number" name="BP[0].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" disabled></td>'
+                + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                + '<td><input type="number" style="display:none" name="BP[' + i + ']" id="" class="form-control price" value=""  onkeypress="if(this.value.length==8) return false;"></td>';
+            $("#odgvData").append(test);
+
+            i = i + 1;
+
+        }
+
+        else {
+
+            var test = '<tr id="">'
+                + '<td><select class="form-control" name="BP[' + i + '].Type" id=""><option value="" selected="selected"> --เลือก --</option><option value="normal">ธรรมดา</option><option value="register">ลงทะเบียน</option><option value="ems">EMS</option><option value="emsar">EMS – AR (ตอบรับ)</option></select></td>'
+                + '<td><input type="text" name="BP[' + i + '].Name" class="form-control" value="" maxlength="100" id=""></td>'
+                + '<td><input type="number" name="BP[' + i + '].Postel" class="form-control" value="" onkeypress="if(this.value.length==5) return false;" id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].Itemcode" class="form-control itemcode" value="" maxlength="20" disabled id=""></td>'
+                + '<td><input type="text" name="BP[' + i + '].EMSRev" class="form-control itemcode" value="" maxlength="20" disabled id=""></td>'
+                + '<td><input type="number" name="BP[0].Price" id="" class="form-control price" value="" onkeypress="if(this.value.length==8) return false;" disabled></td>'
+                + '<td align="center"><button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button></td>'
+                + '<td><input type="number" style="display:none" name="BP[' + i + ']" id="" class="form-control price" value=""  onkeypress="if(this.value.length==8) return false;"></td>';
+            $("#odgvData").append(test);
+
+            i = i + 1;
+        }
+    }
+
+    function SomeDeleteRowFunction(btndel) {
+
+        message = "ยืนยันการลบ?"
+
+        var r = confirm(message);
+
+        if (r == true) {
+            if (typeof (btndel) == "object") {
+
+                //$(btndel).closest("tr").remove();
+
+                //var a = $(btndel).closest("tr")[0].children[1].children[0].defaultValue;
+
+                //var b = $(btndel).closest("tr")[0];
+
+                //alert(a);
+
+                $(btndel).closest("tr").hide();
+                $(btndel).closest("tr")[0].children[1].children[0].defaultValue = "";
+
+            } else {
+                return false;
+            }
+        }
+        else {
+
+        }
+
+    }
+
+
+    function editclick(x, y, ws2) {
+
+
+        if (x == 'G') {
+
+            document.getElementById("save").style.display = 'block';
+            document.getElementById('remark').disabled = false;
+            document.getElementById('remarkadmin').disabled = false;
+
+            document.getElementById("statusjob").style.display = 'none';
+            document.getElementById("savejob").style.display = 'none';
+            document.getElementById("deletejob").style.display = 'block';
+
+            var x = document.getElementsByClassName('postel');
+            var i;
+
+            for (i = 0; i < x.length; i++) {
+                x[i].disabled = false;
+            }
+
+            var y = document.getElementsByClassName('delbtn');
+            var j
+
+            for (var j = 0; j < y.length; j++) {
+                y[j].disabled = false;
+            }
+
+            var z = document.getElementsByClassName('itemcode');
+            var k;
+
+            for (var k = 0; k < z.length; k++) {
+                z[k].disabled = false;
+            }
+
+            var a = document.getElementsByClassName('price');
+            var l;
+
+            for (var l = 0; l < a.length; l++) {
+                a[l].disabled = false;
+            }
+            var w = document.getElementsByClassName('EMSRev');
+            var m;
+
+            for (var m = 0; m < w.length; m++) {
+                if (w[m].value != null) {
+
+                    w[m].disabled = false;
+                }
+
+            }
+
+        }
+        else if (x == 'P') {
+            document.getElementById('remark').disabled = false;
+            document.getElementById('remarkadmin').disabled = false;
+
+            document.getElementById("savejob").style.display = 'block';
+            document.getElementById("deletejob").style.display = 'block';
+
+            var x = document.getElementsByClassName('postel');
+            var jbtype = document.getElementsByClassName('Jobtype');
+            var i;
+
+            for (i = 0; i < x.length; i++) {
+                x[i].disabled = false;
+            }
+
+            var y = document.getElementsByClassName('delbtn');
+            var j
+
+            for (var j = 0; j < y.length; j++) {
+                y[j].disabled = false;
+            }
+
+            var z = document.getElementsByClassName('itemcode');
+            var k;
+
+            for (var k = 0; k < z.length; k++) {
+                z[k].disabled = false;
+            }
+
+
+
+            var a = document.getElementsByClassName('price');
+            var l;
+
+            for (var l = 0; l < a.length; l++) {
+                a[l].disabled = false;
+            }
+            var w = document.getElementsByClassName('EMSRev');
+            var m;
+
+            for (var m = 0; m < w.length; m++) {
+                w[m].disabled = false;
+            }
+
+
+        }
+        else {
+
+            if (y == 'A') {
+                document.getElementById('save').style.display = 'none';
+                document.getElementById('export').style.display = 'none';
+
+                document.getElementById('export1').style.display = 'none';
+                document.getElementById('remark').disabled = false;
+                document.getElementById('remarkadmin').disabled = false;
+
+                document.getElementById("deletejob").style.display = 'block';
+
+            }
+            if (y == 'B') {
+
+                document.getElementById("save").style.display = 'block';
+                document.getElementById('remarkadmin').disabled = false;
+            }
+
+
+            document.getElementById('remark').disabled = false;
+
+            document.getElementById("save").style.display = 'block';
+
+
+            var x = document.getElementsByClassName('postel');
+            var i;
+
+            for (i = 0; i < x.length; i++) {
+                x[i].disabled = false;
+            }
+
+            var y = document.getElementsByClassName('delbtn');
+            var j
+
+            for (var j = 0; j < y.length; j++) {
+                y[j].disabled = false ;
+            }
+
+            var z = document.getElementsByClassName('itemcode');
+            var k;
+
+            for (var k = 0; k < z.length; k++) {
+                if (ws2 != 'G') {
+                    z[k].disabled = false;
+                }
+
+            }
+
+            var ws1 = document.getElementsByClassName('emsrev');
+            var as1;
+
+            for (var as1 = 0; as1 < ws1.length; as1++) {
+                if (ws2 == 'E') {
+                    ws1[as1].disabled = false;
+                }
+
+            }
+
+            var a = document.getElementsByClassName('price');
+            var l;
+
+            for (var l = 0; l < a.length; l++) {
+                a[l].disabled = false;
+            }
+        }
+    }
+
+        </script>
+
+        @Html.Raw(TempData["msg"])

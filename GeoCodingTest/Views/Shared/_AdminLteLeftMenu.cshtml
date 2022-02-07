@@ -1,0 +1,141 @@
+﻿<aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="~/Content/adminlte/dist/img/user8-128x128.jpg" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>@Session["Name"]</p>
+                <!-- Status -->
+                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>
+
+        @if (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "9")
+        {
+            <!-- Sidebar Menu -->
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">HEADER</li>
+            <li class=""><a href="~/Home/Index"><i class="fa fa-home"></i> <span>หน้าแรก</span></a></li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-map"></i> <span>แผนที่</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="~/Map/MapInsert">แทรกแผนที่ </a></li>
+                    <li><a href="~/Map/MapView">ดูแผนที่</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-file-text"></i> <span>Report</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="~/CR/BillingReport">รายงานวางบิล </a></li>
+                    <li><a href="~/CR/ReceiveReport">รายงานเก็บเงิน</a></li>
+                    <li><a href="~/CR/FailBillingReport">วางบิลไม่ได้</a></li>
+                    <li><a href="~/CR/DocumentReport">งานรับส่งเอกสารทั้งหมด</a></li>
+                    <li><a href="~/CR/CNReport">งาน CN</a></li>
+                    <li><a href="~/CR/OtherReport">งานอื่นๆ</a></li>
+                    <li><a href="~/CR/GeneralJob">งานทั่วไป</a></li>
+                    <li><a href="~/CR/OnlineJob">งานออนไลน์</a></li>
+                    @if (Session["Position"].ToString() == "8")
+                    {
+                        <li><a href="~/CR/AllReport">รายงานรวม</a></li>
+                        <li><a href="~/CR/Heatmap">รายงาน Heatmap</a></li>
+                        <li><a href="~/CR/FrequencyReport">รายงานความถี่</a></li>
+                    }
+                </ul>
+            </li>
+            <!-- Optionally, you can add icons to the links -->
+            <li class=""><a href="~/GeoCoding/Billing"><i class="fa fa-file"></i> <span>วางบิล</span></a></li>
+            <li class=""><a href="~/GeoCoding/Receive"><i class="fa fa-money"></i> <span>เก็บเงิน</span></a></li>
+            <li class=""><a href="~/GeoCoding/CN"><i class="fa fa-magic"></i> <span>CN</span></a></li>
+            <li class=""><a href="~/GeoCoding/Other"><i class="fa fa-cubes"></i> <span>อื่นๆ</span></a></li>
+            <li class=""><a href="~/GeoCoding/Delivery"><i class="fa fa-motorcycle"></i> <span>รับส่งเอกสาร</span></a></li>
+            <li class=""><a href="~/GeoCoding/Online"><i class="fa fa-spinner"></i> <span>งานออนไลน์</span></a></li>
+            <li class=""><a href="~/GeoCoding/conditionBilling"><i class="fa fa-info"></i> <span>เงื่อนไขการวางบิลรับเช็ค</span></a></li>
+
+            @if (Session["Position"].ToString() == "8")
+            {
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-search"></i> <span>ค้นหาบิล</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="~/GeoCoding/BillingFind">วางบิล </a></li>
+                        <li><a href="~/GeoCoding/ReceiveFind">เก็บเงิน</a></li>
+                        <li><a href="~/GeoCoding/CNFind">CN</a></li>
+                        <li><a href="~/GeoCoding/OtherFind">อื่นๆ</a></li>
+                        <li><a href="~/GeoCoding/DeliveryFind">รับส่งเอกสาร</a></li>
+                    </ul>
+                </li>
+            }
+
+            @if (Session["Position"].ToString() == "8")
+            {
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-eraser"></i> <span>ลบเอกสาร</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="~/DeleteDoc/DeleteBilling">ลบเอกสารวางบิล </a></li>
+                        <li><a href="~/DeleteDoc/DeleteReceive">ลบเอกสารเก็บเงิน </a></li>
+                        <li><a href="~/DeleteDoc/DeleteCN">ลบเอกสาร CN </a></li>
+                        <li><a href="~/DeleteDoc/DeleteOther">ลบเอกสารอื่นๆ </a></li>
+                        <li><a href="~/DeleteDoc/DeleteDelivery">ลบเอกสารรับส่งเอกสาร </a></li>
+                    </ul>
+                </li>
+            }
+        </ul>
+        }
+
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">GENERAL</li>
+                <li class=""><a href="~/Home/Index"><i class="fa fa-home"></i> <span>หน้าแรก</span></a></li>
+                <li class=""><a href="~/GeoCoding/WorkOrder"><i class="fa fa-dot-circle-o"></i> <span>งานทั่วไป</span></a></li>
+                <li class=""><a href="~/GeoCoding/WorkList"><i class="fa fa-briefcase"></i> <span>รายการงานทั่วไป</span></a></li>
+                <li class=""><a href="~/GeoCoding/WorkOrderPostel"><i class="fa fa-envelope-open"></i> <span>งานไปรษณีย์</span></a></li>
+                <li class=""><a href="~/GeoCoding/WorkListPostel"><i class="fa fa-bars"></i> <span>รายการงานไปรษณีย์</span></a></li>
+
+                @if (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10")
+                {
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-user"></i> <span>งานไปรษณีย์(Admin)</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="~/GeoCoding/PostelAdmin">บันทึกรายการจัดส่ง </a></li>
+                            <li><a href="~/GeoCoding/PostelAdminPrice">บันทึกราคา </a></li>
+                            <li><a href="~/CR/PostelReport">รายงานไปรษณีย์ประจำเดือน </a></li>
+                            <li><a href="~/CR/PostelReportDaily"> สรุปรายงานไปรษณีย์ </a></li>
+                            <li><a href="~/GeoCoding/PostelExport">รายงานไปรษณีย์แยกประเภท </a></li>
+                        </ul>
+                    </li>
+                }
+
+            </ul>
+
+        <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+</aside>

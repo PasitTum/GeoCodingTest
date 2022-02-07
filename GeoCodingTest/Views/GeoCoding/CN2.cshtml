@@ -1,0 +1,197 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<form id="form1" runat="server">
+    <div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var optionsRadios1;
+        var remark;
+        var name;
+        var code;
+        let arr = [];
+        var dateback;
+        var bank;
+        var branch;
+        var chequeno;
+        var chequeduedate;
+        var chequedate;
+        var totalrev;
+        var checkbox = false;
+
+        function getLocation() {
+
+            //arr = @Html.Raw(Json.Encode(@HttpContext.Current.Session["arr"]));
+
+            var table = document.getElementById('odgvData');
+            for (var r = 1; r < table.rows.length-1; r++) {
+                arr.push(table.rows[r].cells[0].innerHTML);
+            }
+
+            name = document.getElementById("Name").innerText;
+            code = document.getElementById("Code").innerText;
+            remark = document.getElementById("Remark").value;
+            dateback = document.getElementById("CreatedOn").value;
+            
+
+           
+
+            var message1 = "ยืนยันการบันทึก?";
+            var r = confirm(message1);
+
+            if (r == true) {
+                if (name != "") {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition,showError);
+                    }
+                    else { alert("Geolocation is not supported by this browser."); }
+                }
+                else {
+                    alert("ตัวเลือกห้ามว่าง!!");
+                }
+            }
+            else {
+
+            }  
+
+            
+        }
+
+        function showPosition(position) {
+
+            $.ajax({
+                url: '@Url.Action("getCN","GeoCoding")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+                    location: "Latitude: " + position.coords.latitude +
+                        ",Longitude: " + position.coords.longitude + ",Accuracy:" + position.coords.accuracy + ","
+                        + name + "," + code + "," + arr,
+                    Remark: remark,
+                    Dateback: dateback
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    //alert('Success!');
+                    window.location.href = '/Home/Index/';
+                }
+            });            
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+        function back() {
+            window.history.back();
+        }
+
+    </script>
+</form>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-6">
+
+            @{
+                string y = null;
+                var e = y;
+            }
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">บันทึก CN</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                {
+                    <div class="box-body table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th>เลขที่บิล</th>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>วันที่</th>
+                                    <th>ยอดรวม(บาท)</th>
+                                    <th style="display:none" id="Name">@Session["Name"]</th>
+                                    <th style="display:none" id="Code">@Session["Code"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                                {
+                                    decimal d = 0;
+
+                                    foreach (var oItem in Model.ListOINV)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            decimal a = oItem.DocTotal ?? 0;
+                                            var b = string.Format("{0:n}", Math.Round(a, 2));
+                                            d += a;
+
+                                            string c = oItem.DocDate.Value.ToString("dd/MM/yyyy");
+
+                                            <tr>
+                                                <td>@oItem.DocNum</td>
+                                                <td>@oItem.CardName</td>
+                                                <td>@c</td>
+                                                <td align="right">@b</td>
+                                                <td style="display:none">@Session["Name"].ToString()</td>
+                                                <td style="display:none">@Session["Code"].ToString()</td>
+                                            </tr>
+                                        }
+                                    }
+
+                                    e = string.Format("{0:n}", Math.Round(d, 2));
+
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th>ยอดรวม</th>
+                                        <th class="text-right">@e</th>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                    <div class="box-footer">
+
+                        <div class="form-group col-sm-12">
+                            <label>วันที่คืน :</label>
+                            <input type="date" class="form-control" id="CreatedOn">
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <br />
+                            <label>หมายเหตุ</label>
+                            <textarea class="form-control" name="remark" id="Remark" rows="5" placeholder="หมายเหตุ..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-info " onclick="back();">ย้อนกลับ</button>
+                        <button type="submit" class="btn btn-info " onclick="getLocation();">บันทึก</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</body>

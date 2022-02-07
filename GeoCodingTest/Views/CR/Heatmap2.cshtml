@@ -1,0 +1,344 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        html {
+            height: 100%;
+        }
+
+        body {
+            margin: 0px;
+            height: 100%;
+        }
+
+        #map {
+            height: 100%;
+        }
+
+        .ldmap_placeholder {
+            position: relative;
+            width: 50%;
+            height: 500px;
+            border-style: double;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://api.longdo.com/map/?key=bacc2ca1a930ee86c64af0d7149035ec"></script>
+    <script src="~/Content/heatmap-longdo-map-master/build/heatmap.js"></script>
+    <script src="~/Content/heatmap-longdo-map-master/plugins/longdomap-heatmap/longdomap-heatmap.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        var listlat = [];
+        var listlon = [];
+        var listtype = [];
+
+        @foreach(var a in Model.ListBilling)
+        {
+            @:listlat.push("@a.Latitude");
+            @:listlon.push("@a.Longitude");
+            @:listtype.push("@a.Type");
+        }
+
+        var map;
+        //var markercluster;
+        var testData = {
+            max: 500,
+            data: [
+                { lat: 0, lon: 0, value: 0 }
+            ]
+        };
+
+        for (var i = 0; i < listlat.length; i++) {
+            //var maxdata = 10;
+            var lat = parseFloat(listlat[i]);
+            var lon = parseFloat(listlon[i]);
+
+            var data1 = { lat: lat, lon: lon, value: 8 };
+            testData.data.push(data1);
+        }
+
+        var cfg = {
+            'radius': 15,
+            "maxOpacity": .5,
+            "scaleRadius": false,
+            "useLocalExtrema": true
+        };
+        function init() {
+            map = new longdo.Map({
+                placeholder: document.getElementById('map')
+            });
+            heatmapLayer = new HeatmapOverlay(cfg);
+            heatmapLayer.setData(testData);
+            map.Layers.add(heatmapLayer);
+
+            for (var i = 0; i < listlat.length; i++) {
+
+                var x = [18, -5,18,-5];
+                var y = [21, 21, -5, -5];
+                var z;
+              
+                if (i > 3) {
+                    z = i % 4;
+                }
+                else {
+                    z = i;
+                }
+
+                let ii = i + 1;
+                var lat = parseFloat(listlat[i]);
+                var lon = parseFloat(listlon[i]);
+                var type = listtype[i];
+                var color;
+
+                if (type == 'Billing') {
+                    color = 'black';
+                }
+                else if (type == 'Receive') {
+                    color = 'blue';
+                }
+                else if (type == 'CreditNote') {
+                    color = 'red';
+                }
+                else if (type == 'Other') {
+                    color = 'orange';
+                }
+                else if (type == 'Document') {
+                    color = 'green';
+                }
+
+                var marker2 = new longdo.Marker({ lon: lon, lat: lat },
+                    {
+                        title: 'Custom Marker',
+                        icon: {
+                            html: '<div style="color:' + color + '"><b>' + ii + '<b/></div>',
+                            offset: { x: x[z], y: y[z] }
+                        },
+                        popup: {
+                            html: '<div style="color:black"><b>' + ii + '<b/></div>'
+                        }
+                    });
+
+                map.Overlays.add(marker2);
+            }
+        }
+    </script>
+</head>
+<body onload="init();">
+
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Heatmap - @Model.ListBilling[0].Name</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="map"></div>
+
+                <div class="box-footer table-responsive no-padding">
+
+                    <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                        <thead>
+                            <tr role="row">
+                                <th>ลำดับ</th>
+                                <th>รหัสลูกค้า</th>
+                                <th>ชื่อลูกค้า</th>
+                                <th>เลือก</th>
+                                <th>หมายเหตุ</th>
+                                <th>latitude</th>
+                                <th>longitude</th>
+                                <th>ประเภท</th>
+                                <th>วันที่</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.ListBilling != null && Model.ListBilling.Count > 0)
+                            {
+                                int i = 1;
+
+                                foreach (var oItem in Model.ListBilling)
+                                {
+                                    string datetime = oItem.SubmitDate.Value.ToString("dd/MM/yyyy");
+                                    string typeid0 = "";
+
+                                    if(oItem.Type == "Billing")
+                                    {
+                                        if (oItem.TypeID == "0")
+                                        {
+                                            typeid0 = "ครบสมบูรณ์";
+                                        }
+                                        else if (oItem.TypeID == "1")
+                                        {
+                                            typeid0 = "ส่งสินค้าไม่ครบ";
+                                        }
+                                        else if (oItem.TypeID == "2")
+                                        {
+                                            typeid0 = "ขาด PO";
+                                        }
+                                        else if (oItem.TypeID == "3")
+                                        {
+                                            typeid0 = "ขาดลายเซ็นต์";
+                                        }
+                                        else if (oItem.TypeID == "4")
+                                        {
+                                            typeid0 = "อื่นๆ ระบุ";
+                                        }
+                                        else if (oItem.TypeID == "5")
+                                        {
+                                            typeid0 = "วางบิล(โอนเงิน)";
+                                        }
+                                        else if (oItem.TypeID == "6")
+                                        {
+                                            typeid0 = "วางบิลพร้อมเก็บเงิน";
+                                        }
+                                    }
+                                    else if(oItem.Type == "Receive")
+                                    {
+                                        if (oItem.TypeID == "1")
+                                        {
+                                            typeid0 = "เงินสด";
+                                        }
+                                        else if (oItem.TypeID == "2")
+                                        {
+                                            typeid0 = "เช็ค";
+                                        }
+                                        else if (oItem.TypeID == "3")
+                                        {
+                                            typeid0 = "โอนเงิน";
+                                        }
+                                        else if (oItem.TypeID == "4")
+                                        {
+                                            typeid0 = "บิลไม่ครบ";
+                                        }
+                                        else if (oItem.TypeID == "5")
+                                        {
+                                            typeid0 = "อื่นๆ ระบุ";
+                                        }
+                                    }
+                                    else if (oItem.Type == "Other")
+                                    {
+                                        if (oItem.TypeID == "1")
+                                        {
+                                            typeid0 = "เปลี่ยนบิล / เซ็นบิล";
+                                        }
+                                        else if (oItem.TypeID == "2")
+                                        {
+                                            typeid0 = "รับบิล / รับใบเสร็จ / รับใบหัก ณ ที่จ่าย";
+                                        }
+                                        else if (oItem.TypeID == "3")
+                                        {
+                                            typeid0 = "อื่นๆ ระบุ";
+                                        }
+                                    }
+                                    else if (oItem.Type == "Document")
+                                    {
+                                        if (oItem.TypeID == "1")
+                                        {
+                                            typeid0 = "เข้าเช็ค";
+                                        }
+                                        else if (oItem.TypeID == "2")
+                                        {
+                                            typeid0 = "ส่งไปรษณีย์";
+                                        }
+                                        else if (oItem.TypeID == "3")
+                                        {
+                                            typeid0 = "ส่งเอกสาร";
+                                        }
+                                        else if (oItem.TypeID == "4")
+                                        {
+                                            typeid0 = "อื่นๆ ระบุ";
+                                        }
+                                    }
+
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@oItem.CardCode</td>
+                                        <td>@oItem.CardName</td>
+                                        <td>@typeid0</td>
+                                        <td>@oItem.Remark</td>
+                                        <td>@oItem.Latitude</td>
+                                        <td>@oItem.Longitude</td>
+                                        <td>@oItem.Type</td>
+                                        <td>@datetime</td>
+                                    </tr>
+
+                                    i = i + 1;
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts{
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+    @*Gridview*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#odgvData').DataTable({
+                'paging': true,
+                'lengthChange': false,
+                'searching': true,
+                'ordering': false,
+                'info': true,
+                'autoWidth': false,
+                language: {
+                    "zeroRecords": "ไม่มีข้อมูล"
+                },
+                "iDisplayLength": 25
+            });
+
+            $('#Paginator').on('click', 'a', function (even) {
+
+                var tPage = this.search;
+
+                if (tPage == "")
+                    return false;
+
+                tPage = tPage.replace("?", "");
+                tPage = tPage.split("&")[0].replace("page=", "");
+                $("#Page").val(tPage);
+                $("#obtnSearch").click();
+
+                //var radioValue = $("input[name='XVScanType']:checked").val();
+                //pmdoData = {
+                //    XVScanType: radioValue,
+                //    XVSearch: $("#XVSearch").val(),
+                //}
+
+                //$.ajax({
+                //    url: this.href,
+                //    type: 'POST',
+                //    data: pmdoData,
+                //    cache: false,
+                //    async: true,
+                //    error: function (jqXHR, error, errorThrown) {
+                //        //display error
+                //    },
+                //    success: function (data, textStatus, jqXHR) {
+                //        $("body").html(data);
+                //    }
+                //});
+                return false;
+            });
+        });
+    </script>
+}
+

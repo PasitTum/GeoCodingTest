@@ -1,0 +1,422 @@
+﻿@model GeoCodingTest.Models.L1.mWGE
+
+<form id="form1" runat="server">
+    <div>
+    </div>
+
+    <link rel="stylesheet" href="~/Content/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+
+        var optionsRadios1;
+        var remark;
+        var name;
+        var code;
+        let arr = [];
+        var dateback;
+        var bank;
+        var branch;
+        var chequeno;
+        var chequeduedate;
+        var chequedate;
+        var totalrev;
+        var checkbox = false;
+        var receivedate;
+        var refno;
+        var message1;
+
+        function getLocation() {
+
+            //arr = @Html.Raw(Json.Encode(@HttpContext.Current.Session["arr"]));
+
+            var table = document.getElementById('odgvData');
+            for (var r = 1; r < table.rows.length-1; r++) {
+                arr.push(table.rows[r].cells[0].innerHTML);
+            }
+
+            name = document.getElementById("Name").innerText;
+            code = document.getElementById("Code").innerText;
+            remark = document.getElementById("Remark").value;
+            optionsRadios1 = $('input[name="optionsRadios1"]:checked').val(); //get value from radio button
+            totalrev = document.getElementById("TotalRev").value;
+            dateback = document.getElementById("CreatedOn").value;
+            chequeduedate = document.getElementById("ChequeDueDate").value;
+            receivedate = document.getElementById("ChequeDueDate1").value;
+            refno = document.getElementById("Refno").value;
+
+            if (document.getElementById('checkbox3').checked) {
+                bank = "เงินสด";
+                branch = "";
+                chequeno = "";
+                chequedate = "";
+            }
+            else {
+                bank = document.getElementById("Bank").value;
+                branch = document.getElementById("Branch").value;
+                chequeno = document.getElementById("ChequeNo").value;
+                chequedate = document.getElementById("ChequeDate").value;
+            }
+            if (optionsRadios1 == "5") {
+                if (document.querySelector('#checkbox1:checked')) {
+                    checkbox = true;
+                }
+            }
+            else if (optionsRadios1 == "6"){
+                if (document.querySelector('#checkbox2:checked')) {
+                    checkbox = true;
+                }
+            }
+
+            var message1 = "ยืนยันการบันทึก?";
+            var r = confirm(message1);
+
+            if (r == true) {
+                if (name != "" && optionsRadios1 != null) {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition,showError);
+                    }
+                    else { alert("Geolocation is not supported by this browser."); }
+                }
+                else {
+                    alert("ตัวเลือกห้ามว่าง!!");
+                }
+            }
+            else {
+
+            }
+
+
+        }
+        function myCheckBox() {
+            //Reference the Table.
+            var grid = document.getElementById("odgvData");
+
+            //Reference the CheckBoxes in Table.
+            var checkBoxes = grid.getElementsByTagName("input");
+            var message = "";
+
+            //Loop through the CheckBoxes.
+            for (var i = 1; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    var row4 = row.cells[5].innerHTML //
+
+                    message += row.cells[1].innerText;
+                    message += "  " + row.cells[2].innerText;
+                    message += " " + row.cells[3].innerText;
+                    message += "  " + row.cells[5].innerHTML;
+                    message += "\n";
+                }
+            }
+            message1 = message;
+
+        }
+
+        function showPosition(position) {
+
+            $.ajax({
+                url: '@Url.Action("getBilling","GeoCoding")',
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({
+                    location: "Latitude: " + position.coords.latitude +
+                        ",Longitude: " + position.coords.longitude + ",Accuracy:" + position.coords.accuracy + ","
+                        + name + "," + code + "," + optionsRadios1 + "," + arr,
+                    Remark: remark,
+                    Dateback: dateback,
+                    Bank: bank + ',' + branch + ',' + chequeno,
+                    TotalRev: totalrev,
+                    ChequeDueDate: chequeduedate,
+                    ChequeDate: chequedate,
+                    CheckBox: checkbox,
+                    Receivedate: receivedate,
+                    Refno: refno,
+                    Message: message1
+                }),
+                contentType: 'application/json',
+                complete: function () {
+                    //alert('Success!');
+                    window.location.href = '/Home/Index/';
+                }
+            });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    x.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    x.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    x.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    x.innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+
+        function yesnoCheck() {
+            if (document.getElementById('optionsRadios1').checked) {
+                document.getElementById('ifOther').style.display = 'block';
+                document.getElementById('ifMoney').style.display = 'none';
+                document.getElementById('ifCheque').style.display = 'none';
+                document.getElementById('ifCheckBox1').style.display = 'none';
+                document.getElementById('ifCheckBox2').style.display = 'none';
+            }
+            else if (document.getElementById('optionsRadios5').checked) {
+                document.getElementById('ifOther').style.display = 'none';
+                document.getElementById('ifMoney').style.display = 'none';
+                document.getElementById('ifCheque').style.display = 'none';
+                document.getElementById('ifCheckBox1').style.display = 'block';
+                document.getElementById('ifCheckBox2').style.display = 'none';
+            }
+            else if (document.getElementById('optionsRadios6').checked) {
+                document.getElementById('ifOther').style.display = 'none';
+                document.getElementById('ifMoney').style.display = 'block';
+                document.getElementById('ifCheque').style.display = 'none';
+                document.getElementById('ifCheckBox1').style.display = 'none';
+                document.getElementById('ifCheckBox2').style.display = 'block';
+            }
+            else if (document.getElementById('optionsRadios0').checked)
+            {
+                document.getElementById('ifOther').style.display = 'none';
+                document.getElementById('ifMoney').style.display = 'none';
+                document.getElementById('ifCheque').style.display = 'block';
+                document.getElementById('ifCheckBox1').style.display = 'none';
+                document.getElementById('ifCheckBox2').style.display = 'none';
+            }
+            else {
+                document.getElementById('ifOther').style.display = 'none';
+                document.getElementById('ifMoney').style.display = 'none';
+                document.getElementById('ifCheque').style.display = 'none';
+                document.getElementById('ifCheckBox1').style.display = 'none';
+                document.getElementById('ifCheckBox2').style.display = 'none';
+            }
+
+        }
+        function checkcash() {
+            if (document.getElementById('checkbox3').checked) {
+                document.getElementById('bank').style.display = 'none';
+            }
+            else {
+                document.getElementById('bank').style.display = 'block';
+            }
+        }
+        function back() {
+            window.history.back();
+        }
+
+    </script>
+</form>
+
+<body onload="onload();">
+    <div class="row">
+        <div class="col-sm-6">
+
+            @{
+                string y = null;
+                var e = y;
+            }
+
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">ใบวางบิล</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                {
+                    <div class="box-body table-responsive no-padding">
+
+                        <table id="odgvData" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th input>เลขที่บิล</th>
+                                    <th>ชื่อลูกค้า</th>
+                                    <th>วันที่</th>
+                                    <th>ยอดรวม(บาท)</th>
+                                    <th style="display:none" id="Name">@Session["Name"]</th>
+                                    <th style="display:none" id="Code">@Session["Code"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.ListOINV != null && Model.ListOINV.Count > 0)
+                                {
+                                    decimal d = 0;
+
+                                    foreach (var oItem in Model.ListOINV)
+                                    {
+                                        if (Session["Name"].ToString() != "")
+                                        {
+                                            decimal a = oItem.Total ?? 0;
+                                            var b = string.Format("{0:n}", Math.Round(a, 2));
+                                            d += a;
+
+                                            string c = oItem.DocDate.Value.ToString("dd/MM/yyyy");
+
+                                            <tr>
+                                                <td>@oItem.DocNum</td>
+                                                <td>@oItem.CardName</td>
+                                                <td>@c</td>
+                                                <td align="right">@b</td>
+                                                <td style="display:none">@Session["Name"].ToString()</td>
+                                                <td style="display:none">@Session["Code"].ToString()</td>
+                                            </tr>
+                                        }
+                                    }
+
+                                    e = string.Format("{0:n}", Math.Round(d, 2));
+
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th>ยอดรวม</th>
+                                        <th class="text-right">@e</th>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                    <div class="box-footer">
+                        <div class="form-group">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios0" value="0" onclick="javascript:yesnoCheck();">
+                                    ครบสมบูรณ์
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios5" value="5" onclick="javascript:yesnoCheck();">
+                                    วางบิล(โอนเงิน)
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios6" value="6" onclick="javascript:yesnoCheck();">
+                                    วางบิลพร้อมเก็บเงิน
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios1" value="1" onclick="javascript:yesnoCheck();">
+                                    ส่งสินค้าไม่ครบ
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios2" value="2" onclick="javascript:yesnoCheck();">
+                                    ขาด PO
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios3" value="3" onclick="javascript:yesnoCheck();">
+                                    ขาดลายเซ็นต์
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios1" id="optionsRadios4" value="4" onclick="javascript:yesnoCheck();">
+                                    อื่นๆ ระบุ
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" id="ifOther" style="display:none">
+                            <div>
+                                <label>มาอีกครั้งวันที่ :</label>
+                                <input type="date" class="form-control" id="CreatedOn">
+                            </div>
+                        </div>
+                        <div class="col-sm-12" id="ifCheckBox1" style="display:none">
+                            <label>
+                                <input type="checkbox" name="checkbox1" id="checkbox1">
+                                โทรเช็คเอง
+                            </label>
+                        </div>
+                        <div class="col-sm-12" id="ifCheckBox2" style="display:none" onclick="javascript:checkcash();">
+                            <label>
+                                <input type="checkbox" name="checkbox2" id="checkbox2">
+                                โทรเช็คเอง
+                            </label>
+                            <label>
+                                <input type="checkbox" name="checkbox1" id="checkbox3">
+                                (เงินสด)
+                            </label>
+                        </div>
+                        <div class="col-sm-12" id="ifCheque" style="display:none">
+                            <div>
+                                <label>วันที่นัดรับเช็ค :</label>
+                                <input type="date" class="form-control" id="ChequeDueDate">
+                            </div>
+                        </div>
+                        <div class="col-sm-12" id="ifMoney" style="display:none">
+                            <div id="bank" style="display:block">
+                                <label>ธนาคาร :</label>
+                                <select id="Bank" class="form-control">
+                                    <option>-</option>
+                                    <option value="KBANK">กสิกรไทย</option>
+                                    <option value="SCB">ไทยพาณิชย์</option>
+                                    <option value="BBL">กรุงเทพ</option>
+                                    <option value="TMB">ทีเอ็มบี</option>
+                                    <option value="BAY">กรุงศรีอยุธยา</option>
+                                    <option value="CITI">ซิตี้แบงก์</option>
+                                    <option value="GSB">ออมสิน</option>
+                                    <option value="KTB">กรุงไทย</option>
+                                    <option value="TBANK">ธนชาต</option>
+                                    <option value="HSBC">ธนาคารฮ่องกงและเซี้ยงไฮ้ (HSBC)</option>
+                                    <option value="UOB">ยูโอบี (UOB)</option>
+                                    <option value="BOA">แบงก์ออฟอเมริกา (BOA)</option>
+                                    <option value="CIMB">ธนาคารซีไอเอ็มบีไทย (CIMB)</option>
+                                    <option value="SCBT">ธนาคารสแตนดาร์ดชาร์เตอร์ด (SCBT)</option>
+                                    <option value="TTB">ธนาคารทีเอ็มบีธนชาต (TTB)</option>
+                                    <option value="Other Bank">ธนาคารอื่น</option>
+                                </select>
+
+
+                                <label>สาขา:</label>
+                                <input type="text" class="form-control" id="Branch" placeholder="สาขา.." style="display:block">
+
+                                <label>เลขที่เช็ค:</label>
+                                <input type="text" class="form-control" id="ChequeNo" placeholder="เลขที่เช็ค.." style="display:block">
+
+                                <label>วันที่เช็ค:</label>
+                                <input type="date" class="form-control" id="ChequeDate" placeholder="เลขที่เช็ค.." style="display:block">
+                            </div>
+                            <label>จำนวนเงิน:</label>
+                            <input type="text" class="form-control" id="TotalRev" value="@e.Replace(",","")" placeholder="จำนวนเงิน..">
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <br />
+                            <label>วันที่คืน :</label>
+                            <input type="date" class="form-control" id="ChequeDueDate1">
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <br />
+                            <label>เลขใบที่วางบิล :</label>
+                            <input type="text" class="form-control" name="Refno" id="Refno"  placeholder="เลขที่ใบวางบิล...">
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <br />
+                            <label>หมายเหตุ</label>
+                            <textarea class="form-control" name="remark" id="Remark" rows="5" placeholder="หมายเหตุ..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-info " onclick="back();">ย้อนกลับ</button>
+                        <button type="submit" class="btn btn-info " onclick="getLocation();">บันทึก</button>
+                    </div>
+                    </div>
+        </div>
+    </div>
+</body>
