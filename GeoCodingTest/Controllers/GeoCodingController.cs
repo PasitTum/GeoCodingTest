@@ -3638,10 +3638,12 @@ namespace GeoCodingTest.Controllers
                             else if (data.BW.Type_Work == "U")
                             {
                                 typework = "register";
+                                typework2 = "normal";
                             }
                             else if (data.BW.Type_Work == "G")
                             {
                                 typework = "normal";
+                                typework2 = "register";
                             }
                             var ems = (from a in db.C_MCT_BILL_WORKORDER
                                        join b in db.C_MCT_BILL_POSTOFFICE on a.WorkOrder_ID equals b.AC_code
