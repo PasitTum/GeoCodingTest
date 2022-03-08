@@ -56,6 +56,7 @@ namespace GeoCodingTest.Models.L1
         public string MS_2 { get; set; }
         public string MS_3 { get; set; }
         public string MS_4 { get; set; }
+        public List<string> dev { get; set; }
         
     }
 }

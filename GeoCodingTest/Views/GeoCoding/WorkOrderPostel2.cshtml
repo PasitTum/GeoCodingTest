@@ -181,6 +181,8 @@
                                             <th style="text-align:center;width:10%">ค่าบริการ</th>
                                             <th style="display:none"></th>
                                             <th style="display:none"></th>
+                                            <th></th>
+                                            <th style="text-align:center;width:10%">แผนก</th>
 
                                         </tr>
                                     </thead>
@@ -246,10 +248,10 @@
                                                     <td>
                                                         <input type="number" name="@posteln" id="" class="form-control postel" disabled value="@item.Postel" onkeypress="if(this.value.length==5) return false;">
                                                     </td>
-                                                    <td>
+                                                    <td class="col-sm-2">
                                                         <input type="text" style="text-transform: uppercase" name="@itemcoden" id="" class="form-control itemcode" disabled value="@item.Itemcode" maxlength="20">
                                                     </td>
-                                                    <td>
+                                                    <td class="col-sm-2">
                                                         <input type="text" style="text-transform: uppercase" name="@EMSRevn" id="" class="form-control emsrev" disabled value="@item.EMSRev" maxlength="20">
                                                     </td>
                                                     @if (price == 0)
@@ -275,6 +277,9 @@
                                                         <button type="button" disabled onclick="SomeDeleteRowFunction(this);" class="form-control delbtn">
                                                             <img src="https://www.img.in.th/images/71b99e23a03304dba0df238d7318cfbe.png" alt="71b99e23a03304dba0df238d7318cfbe.png" border="0" />
                                                         </button>
+                                                    </td>
+                                                    <td >
+                                                        <input type="text" style="text-align:center" id="" class="form-control" disabled value="@Model.dev[i]" maxlength="20">
                                                     </td>
                                                 </tr>
 

@@ -69,14 +69,17 @@ namespace GeoCodingTest.Controllers
                                     //string a = de.Properties["userPrincipalName"][0].ToString();
 
                                     OHEM mData = db.OHEM.Where(o => o.ExtEmpNo.Equals(usercode)).FirstOrDefault();
-
-                                    /*using(var da=new KPIEntities())
-                                    {*/
-                                        //USERINFO mData = da.USERINFOes.Where(o => o.USR_NO.Equals(usercode)).FirstOrDefault();
-
+                                    
                                         Session["Code"] = mData.ExtEmpNo;
                                         Session["Name"] = mData.firstName + " " + mData.lastName;
+                                    if(ID== "sirikorn.t")
+                                    {
+                                        Session["Job"] = "Finance Officer";
+                                    }
+                                    else
+                                    {
                                         Session["Job"] = mData.jobTitle;
+                                    }
                                         Session["Position"] = mData.position;
                                         Session["Department"] = mData.dept;
 

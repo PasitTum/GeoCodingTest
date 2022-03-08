@@ -98,7 +98,6 @@ namespace GeoCodingTest.Models.L2
         {
 
         }
-
         public class C_MCT_BILL_WORKORDER2 : C_MCT_BILL_WORKORDER
         {
             public string date { get; set; }

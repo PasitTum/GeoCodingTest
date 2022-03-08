@@ -681,6 +681,20 @@ else
                                         </select>
                                     </div>
                                 }
+                                else if (Session["Department"].ToString() == "17")
+                                {
+                                    <div class="col-sm-12 col-md-2">
+                                        <select class="form-control" name="BW.jobtitle" required>
+                                            <option value="Sales Support" selected>SS 1720</option>
+                                            <option value="Food Industry">ID 1110</option>
+                                            <option value="Food Service">FS 1310</option>
+                                            <option value="Event & Promotions">EV 1410</option>
+                                            <option value="Merchandiser">MER 1420</option>
+                                            <option value="Key Account">KA 1430</option>
+                                            <option value="Marketing">MK 1510</option>
+                                        </select>
+                                    </div>
+                                }
                                 else
                                 {
                                     <div style="display:none">
@@ -862,7 +876,7 @@ else
 
                 $(btndel).closest("tr").hide();
                 $(btndel).closest("tr")[0].children[1].children[0].defaultValue = "";
-                document.getElementsById('BP[' + i + '].Name').value = null;
+                document.getElementById('BP[' + i + '].Name').value = null;
             } else {
                 return false;
             }

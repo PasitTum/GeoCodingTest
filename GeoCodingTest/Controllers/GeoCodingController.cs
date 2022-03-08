@@ -2507,7 +2507,7 @@ namespace GeoCodingTest.Controllers
                         data_billworkorder.Type_Work = data.BW.Type_Work;
                         data_billworkorder.Remark = data.BW.Remark;
                         data_billworkorder.Status = "W";
-                        if((Session["Position"].ToString()=="8" || Session["Position"].ToString() == "10") && data.BW.Type_Work =="P")
+                        if( data.BW.Type_Work =="P")
                         {
                             if (data.BW.jobtitle == "Food Industry")
                             {
@@ -4351,6 +4351,184 @@ namespace GeoCodingTest.Controllers
                             {
                                 mData.ListPO1 = oData3;
                             }
+                            
+                            
+                        }
+                        var devlist = (from a in db.C_MCT_BILL_POSTOFFICE
+                                       where a.AC_code == workid
+                                       orderby a.Itemcode
+                                       select a.WorkOrder_ID).ToList();
+                        List<string> dev = new List<string>();
+                        foreach (var oData4 in devlist)
+                        {
+                                var devs = (from a in db.C_MCT_BILL_WORKORDER
+                                            where a.WorkOrder_ID == oData4
+                                            select a).FirstOrDefault();
+                            if(devs.Commander_Department == "Corporate Finance")
+                            {
+                                dev.Add("FN");
+                            }
+                            else if(devs.Commander_Department == "Corporate Accounting")
+                            {
+                                dev.Add("AC");
+                            }
+                            else if(devs.Commander_Department == "Human Resources")
+                            {
+                                dev.Add("HR");
+                            }
+                            else if (devs.Commander_Department == "General Admin")
+                            {
+                                dev.Add("AD");
+                            }
+                            else if (devs.Commander_Department == "IT")
+                            {
+                                dev.Add("IT");
+                            }
+                            else if (devs.Commander_Department == "Warehouse")
+                            {
+                                dev.Add("WH");
+                            }
+                            else if (devs.Commander_Department == "Procurement")
+                            {
+                                switch (devs.Commander_JobTitle)
+                                {
+                                    case "Domestic Procurement":
+                                    case "Logistic Officer":
+                                    case "Senior Regulatory Af":
+                                    case "Procurement Administ":
+                                    case "Reg. Aff. Off.":
+                                    case "LG Sup.":
+                                    case "Procurement Manager":
+                                    case "Procurement":
+                                        dev.Add("PM");
+                                        break;
+                                    case "Compliance Officer":
+                                    case "Factory Administrati":
+                                    case "Factory Driver":
+                                    case "Factory Housekeeper":
+                                    case "Factory Inventory Ma":
+                                    case "Factory Inventory Of":
+                                    case "Factory Inventory Op":
+                                    case "Maintenance Assistan":
+                                    case "Maintenance Officer":
+                                    case "PL Div. Mgr.":
+                                    case "Production":
+                                    case "Production Admin Off":
+                                    case "Production Control S":
+                                    case "Production Manufactu":
+                                    case "Production Operation":
+                                    case "Production Operator ":
+                                    case "Production Planning":
+                                    case "QA Supervisor (LAB)":
+                                    case "QA Supervisor (LINE)":
+                                    case "QA Supervisor (WH)":
+                                    case "QC Lab Inspection Of":
+                                    case "QC Line Inspection O":
+                                    case "RD & QA":
+                                    case "RD & QA Manager":
+                                    case "RD Operator (Pool)":
+                                    case "RD Team A Supervisor":
+                                    case "RD Team B Supervisor":
+                                    case "RD Team C Supervisor":
+                                    case "Strategic Manager":
+                                    case "Team Leader - Blendi":
+                                    case "Team Leader - Raw Ma":
+                                    case "Team Leader - Repack":
+                                        dev.Add("PL");
+                                        break;
+                                    default:
+                                        dev.Add("");
+                                        break;
+                                }
+                            }
+                            else if (devs.Commander_Department == "Executive Management")
+                            {
+                                dev.Add("EM");
+                            }
+                            else if (devs.Commander_Department == "RD & QA")
+                            {
+                                dev.Add("PL");
+                            }
+                            else if (devs.Commander_Department == "Sales Support")
+                            {
+                                dev.Add("SS");
+                            }
+                            else if (devs.Commander_Department == "Food Solutions" || devs.Commander_Department == "Sales Strategy")
+                            {
+                                dev.Add("FS");
+                            }
+                            else if (devs.Commander_Department == "Business Development")
+                            {
+                                switch(devs.Commander_JobTitle)
+                                {
+                                    case "Production Officer":  case "Shop Supervisor (Bav": case "Senior Cashier": case "Shop Supervisor (Bak": case "Barista":
+                                        dev.Add("DL");
+                                        break;
+                                    case "Business Development": case "Product Specialist -": case "PR & Communicaion Ex": case "BD Coordinator & Cus": case "Graphic Designer": case "Product Specialist & PR":
+                                        dev.Add("BD");
+                                        break;
+                                    default:
+                                        dev.Add("");
+                                        break;
+                                }
+                            }
+                            else if (devs.Commander_Department == "Product Management" || devs.Commander_Department == "Marketing Strategy")
+                            {
+                                dev.Add("MK");
+                            }
+                            else if (devs.Commander_Department == "Modern Trade")
+                            {
+                                switch (devs.Commander_JobTitle)
+                                {
+                                    case "Key Account Exe":
+                                    case "Key Account Executiv":
+                                    case "Senior Key Account E":
+                                    case "Key Acc. Ex.":
+                                    case "Key Account":
+                                        dev.Add("KA");
+                                        break;
+                                    case "BKK Mer. 2":
+                                    case "UPC Merchandiser":
+                                    case "BKK Mer. 1":
+                                    case "BKK Mer. 3":
+                                    case "BKK Mer. 4":
+                                    case "BKK Mer. 5":
+                                    case "BKK Merchandiser":
+                                    case "Merchandiser Supervi":
+                                    case "Merchandiser":
+                                        dev.Add("MER");
+                                        break;
+                                    case "Event & Promotions S":
+                                    case "Event Sales Officer":
+                                    case "Assistant Corporate":
+                                    case "Head of MT Sales":
+                                    case "Senior Event Sales O":
+                                    case "MT Sales Mgr.":
+                                    case "Event Sales Driver":
+                                    case "Event & Promotions":
+                                        dev.Add("EV");
+                                        break;
+                                    default:
+                                        dev.Add("");
+                                        break;
+                                }
+                            }
+                            else if (devs.Commander_Department == "Food Service")
+                            {
+                                dev.Add("FS");
+                            }
+                            else if(devs.Commander_Department == "Food Industry")
+                            {
+                                dev.Add("ID");
+                            }
+                            else
+                            {
+                                dev.Add("");
+                            }
+                        }
+                        if(dev != null)
+                        {
+                            mData.dev = dev;
                         }
 
                         string type_work = db.C_MCT_BILL_WORKORDER.Where(w => w.WorkOrder_ID == id).Select(z => z.Type_Work).FirstOrDefault();

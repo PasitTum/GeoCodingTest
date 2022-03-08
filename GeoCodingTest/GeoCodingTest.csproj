@@ -7706,6 +7706,7 @@
     <Content Include="Models\L2\WGE01.edmx.diagram">
       <DependentUpon>WGE01.edmx</DependentUpon>
     </Content>
+    <Content Include="File\Manual Postel.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

@@ -124,7 +124,7 @@
                 $("#sortable").disableSelection();
             });
             
-            function SomeDeleteRowFunction(btndel) {
+            function SomeDeleteRowFunction(btndel,i) {
 
                 message = "ยืนยันการลบ?"
 
@@ -143,7 +143,7 @@
 
                         $(btndel).closest("tr").hide();
                         $(btndel).closest("tr")[0].children[1].children[0].defaultValue = "";
-
+                        document.getElementById('BP[' + i + '].Name').value = null;
                     } else {
                         return false;
                     }
@@ -386,28 +386,28 @@
                                         }
 
                                         <td>
-                                            <input type="text" name="@namen" id="" class="form-control" value="@oItem.Name" maxlength="100">
+                                            <input type="text" name="@namen" id="@namen" class="form-control" value="@oItem.Name" maxlength="100">
                                         </td>
                                         <td>
-                                            <input type="number" name="@posteln" id="" class="form-control postel" value="@oItem.Postel" onkeypress="if(this.value.length==5) return false;">
+                                            <input type="number" name="@posteln" id="@posteln" class="form-control postel" value="@oItem.Postel" onkeypress="if(this.value.length==5) return false;">
                                         </td>
 
                                         @if (oItem.Type == "normal")
                                         {
                                             <td>
-                                                <input type="text" name="@itemcoden" id="" style="text-transform: uppercase" class="form-control" value="@oItem.Itemcode" maxlength="20" disabled>
+                                                <input type="text" name="@itemcoden" id="@itemcoden" style="text-transform: uppercase" class="form-control" value="@oItem.Itemcode" maxlength="20" disabled>
                                             </td>
                                             <td>
-                                                <input type="text" name="@EMSRevn" id="" style="text-transform: uppercase" class="form-control" value="@oItem.EMSRev" maxlength="20" disabled>
+                                                <input type="text" name="@EMSRevn" id="@EMSRevn" style="text-transform: uppercase" class="form-control" value="@oItem.EMSRev" maxlength="20" disabled>
                                             </td>
                                         }
                                         else if (oItem.Type == "register" || oItem.Type == "ems")
                                         {
                                             <td>
-                                                <input type="text" name="@itemcoden" id="" style="text-transform: uppercase" class="form-control itemcode" onkeypress="if(this.value.length==13) return false;" pattern=".{13,}" title="กรอกเลขไม่ครบ" value="@oItem.Itemcode" maxlength="20">
+                                                <input type="text" name="@itemcoden" id="@itemcoden" style="text-transform: uppercase" class="form-control itemcode" onkeypress="if(this.value.length==13) return false;" pattern=".{13,}" title="กรอกเลขไม่ครบ" value="@oItem.Itemcode" maxlength="20">
                                             </td>
                                             <td>
-                                                <input type="text" name="@EMSRevn" id="" style="text-transform: uppercase" class="form-control " onkeypress="if(this.value.length==13) return false;"  value="@oItem.EMSRev" maxlength="20" disabled>
+                                                <input type="text" name="@EMSRevn" id="@EMSRevn" style="text-transform: uppercase" class="form-control " onkeypress="if(this.value.length==13) return false;"  value="@oItem.EMSRev" maxlength="20" disabled>
                                             </td>
                                         }
                                         else
@@ -420,7 +420,7 @@
                                             </td>
                                         }
                                         <td align="center">
-                                            <button type="button" onclick="SomeDeleteRowFunction(this);"><img src="../Content/adminlte/dist/img/trash.png" /></button>
+                                            <button type="button" onclick="SomeDeleteRowFunction(this,@i);"><img src="../Content/adminlte/dist/img/trash.png" /></button>
                                         </td>
                                         <td style="display:none">
                                             <input type="text" name="@workorderid" class="form-control" id="" value="@oItem.WorkOrder_ID" hidden>
