@@ -517,5 +517,7 @@ namespace GeoCodingTest.Models.L1
         public string U_WGE_PlaceTo { get; set; }
         public string U_WGE_UpTime { get; set; }
         public string U_WGE_Revision { get; set; }
+        public string U_JWS_ZortID { get; set; }
+        public string U_JWS_ZortNum { get; set; }
     }
 }

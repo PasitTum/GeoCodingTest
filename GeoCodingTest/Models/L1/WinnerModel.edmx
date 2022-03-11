@@ -66,7 +66,7 @@
           <Property Name="print_date" Type="date" />
           <Property Name="tracking_first" Type="nvarchar" MaxLength="20" />
           <Property Name="tracking_last" Type="nvarchar" MaxLength="20" />
-          <Property Name="Commander_JobTitle" Type="nchar" MaxLength="50" />
+          <Property Name="Commander_JobTitle" Type="nvarchar" MaxLength="50" />
           <Property Name="Work_ID" Type="int" />
           <Property Name="Postel_ID" Type="int" />
           <Property Name="MS_1" Type="nvarchar" MaxLength="1" />
@@ -1306,6 +1306,8 @@
           <Property Name="U_WGE_PlaceTo" Type="nvarchar" MaxLength="50" />
           <Property Name="U_WGE_UpTime" Type="nvarchar" MaxLength="10" />
           <Property Name="U_WGE_Revision" Type="nvarchar" MaxLength="2" />
+          <Property Name="U_JWS_ZortID" Type="nvarchar" MaxLength="15" />
+          <Property Name="U_JWS_ZortNum" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="ORIN">
           <Key>
@@ -1814,6 +1816,8 @@
           <Property Name="U_WGE_PlaceTo" Type="nvarchar" MaxLength="50" />
           <Property Name="U_WGE_UpTime" Type="nvarchar" MaxLength="10" />
           <Property Name="U_WGE_Revision" Type="nvarchar" MaxLength="2" />
+          <Property Name="U_JWS_ZortID" Type="nvarchar" MaxLength="15" />
+          <Property Name="U_JWS_ZortNum" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="OSLP">
           <Key>
@@ -2937,6 +2941,8 @@
           <Property Name="U_WGE_PlaceTo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="U_WGE_UpTime" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="U_WGE_Revision" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="U_JWS_ZortID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="U_JWS_ZortNum" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ORIN">
           <Key>
@@ -3445,6 +3451,8 @@
           <Property Name="U_WGE_PlaceTo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="U_WGE_UpTime" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="U_WGE_Revision" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="U_JWS_ZortID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="U_JWS_ZortNum" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="OSLP">
           <Key>
@@ -3723,7 +3731,7 @@
           <Property Name="print_date" Type="DateTime" Precision="0" />
           <Property Name="tracking_first" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="tracking_last" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Commander_JobTitle" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Commander_JobTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Work_ID" Type="Int32" />
           <Property Name="Postel_ID" Type="Int32" />
           <Property Name="MS_1" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
@@ -4328,6 +4336,8 @@
           <EntitySetMapping Name="OINV">
             <EntityTypeMapping TypeName="DBS_WGE_Model.OINV">
               <MappingFragment StoreEntitySet="OINV">
+                <ScalarProperty Name="U_JWS_ZortNum" ColumnName="U_JWS_ZortNum" />
+                <ScalarProperty Name="U_JWS_ZortID" ColumnName="U_JWS_ZortID" />
                 <ScalarProperty Name="U_WGE_Revision" ColumnName="U_WGE_Revision" />
                 <ScalarProperty Name="U_WGE_UpTime" ColumnName="U_WGE_UpTime" />
                 <ScalarProperty Name="U_WGE_PlaceTo" ColumnName="U_WGE_PlaceTo" />
@@ -4837,6 +4847,8 @@
           <EntitySetMapping Name="ORIN">
             <EntityTypeMapping TypeName="DBS_WGE_Model.ORIN">
               <MappingFragment StoreEntitySet="ORIN">
+                <ScalarProperty Name="U_JWS_ZortNum" ColumnName="U_JWS_ZortNum" />
+                <ScalarProperty Name="U_JWS_ZortID" ColumnName="U_JWS_ZortID" />
                 <ScalarProperty Name="U_WGE_Revision" ColumnName="U_WGE_Revision" />
                 <ScalarProperty Name="U_WGE_UpTime" ColumnName="U_WGE_UpTime" />
                 <ScalarProperty Name="U_WGE_PlaceTo" ColumnName="U_WGE_PlaceTo" />
