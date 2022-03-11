@@ -5666,7 +5666,8 @@ namespace GeoCodingTest.Controllers
                                     var senderEmail = new MailAddress("info@winnergroup.co.th", "Bill&Postel");
                                     var receiverEmail = new MailAddress(email[i], "Receiver");
                                     var subject = "Bill & Postel";
-
+                                    MailAddress copy = new MailAddress("chidawan.r@winnergroup.co.th");
+                                    MailAddress copy2 = new MailAddress("pasit.b@winnergroup.co.th");
                                     var smtp = new SmtpClient
                                     {
                                         Host = "mail.winnergroup.co.th"
@@ -5678,6 +5679,8 @@ namespace GeoCodingTest.Controllers
                                     })
                                     {
                                         mess.IsBodyHtml = true;
+                                        mess.CC.Add(copy);
+                                        mess.CC.Add(copy2);
                                         smtp.Send(mess);
                                     }
                                 }
