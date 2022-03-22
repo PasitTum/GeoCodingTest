@@ -5668,10 +5668,14 @@ namespace GeoCodingTest.Controllers
                                     var subject = "Bill & Postel";
                                     MailAddress copy = new MailAddress("chidawan.r@winnergroup.co.th");
                                     MailAddress copy2 = new MailAddress("pasit.b@winnergroup.co.th");
-                                    var smtp = new SmtpClient
-                                    {
-                                        Host = "mail.winnergroup.co.th"
-                                    };
+                                    
+                                    SmtpClient smtp = new SmtpClient();
+                                    smtp.UseDefaultCredentials = false;
+                                    smtp.Credentials = new System.Net.NetworkCredential("info@winnergroup.co.th", "A123456a");
+                                    smtp.Port = 587; // You can use Port 25 if 587 is blocked (mine is!)
+                                    smtp.Host = "smtp.office365.com";
+                                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                                    smtp.EnableSsl = true;
                                     using (var mess = new MailMessage(senderEmail, receiverEmail)
                                     {
                                         Subject = subject,
@@ -5679,8 +5683,11 @@ namespace GeoCodingTest.Controllers
                                     })
                                     {
                                         mess.IsBodyHtml = true;
-                                        mess.CC.Add(copy);
-                                        mess.CC.Add(copy2);
+                                        if(oData2.Count > 0)
+                                        {
+                                            mess.CC.Add(copy);
+                                            mess.CC.Add(copy2);
+                                        }
                                         smtp.Send(mess);
                                     }
                                 }
