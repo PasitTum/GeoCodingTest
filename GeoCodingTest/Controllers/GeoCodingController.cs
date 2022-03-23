@@ -368,7 +368,7 @@ namespace GeoCodingTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult getOnline(string location, string Remark, string ID)
+        public ActionResult getOnline(string location, string Remark, string ID,string radio1,float Price,float Weight)
         {
             if (Session["Name"] == null)
             {
@@ -383,32 +383,42 @@ namespace GeoCodingTest.Controllers
                 string name1 = location1[3];
                 string code1 = location1[4];
                 string remark1 = Remark;
-                string typeid1 = "5";
+                string typeid1 = radio1;
                 string choice = location1[5];
                 string id = ID;
                 float price;
-
-                if(choice == "B")
+                if(radio1 == "5")
                 {
-                    price = 54;
+                    if (choice == "B")
+                    {
+                        price = 54;
+                    }
+                    else if (choice == "2B")
+                    {
+                        price = 81;
+                    }
+                    else if (choice == "D")
+                    {
+                        price = 86;
+                    }
+                    else if (choice == "2D")
+                    {
+                        price = 117;
+                    }
+                    else
+                    {
+                        price = 0;
+                    }
                 }
-                else if(choice == "2B")
+                else if (radio1 == "6")
                 {
-                    price = 81;
-                }
-                else if(choice == "D")
-                {
-                    price = 86;
-                }
-                else if(choice == "2D")
-                {
-                    price = 117;
+                    price = Price;
                 }
                 else
                 {
                     price = 0;
                 }
-                
+
                 using (var db = new DBS_WGE_Entities())
                 {
 
@@ -421,13 +431,21 @@ namespace GeoCodingTest.Controllers
                     dbs.Latitude = latitude1[1];
                     dbs.Longitude = longitude1[1];
                     dbs.SubmitDate = DateTime.Now;
-                    dbs.size = choice;
+                    if(radio1 == "5")
+                    {
+                        dbs.size = choice;
+                    }
+                    else
+                    {
+                        dbs.size = Weight.ToString();
+                    }
                     dbs.order = ID;
                     dbs.price = Convert.ToDecimal(price);
                     dbs.daterecive = DateTime.Now.Date;
+                    
                     db.C_MCT_DOCUMENT.Add(dbs);
                     db.SaveChanges();
-
+                    
                     log.WriteLog(string.Format("{0}({1}) : {2} {3}/{4}", Session["Name"].ToString(), Session["Code"].ToString(), "Add", System.Reflection.MethodBase.GetCurrentMethod().Name, "success"));
                     TempData["msg"] = "<script>alert('Success');</script>";
                 }

@@ -61,22 +61,32 @@
                                                 case "5":
                                                     e = "งานออนไลน์";
                                                     break;
+                                                case "6":
+                                                    e = "งานไปรษณีย์";
+                                                    break;
                                             }
-                                             
-                                            <tr>
-                                                <td>@e</td>
-                                                @if (oItem.TypeID == "5")
-                                                {
-                                                    string date = oItem.daterecive.Value.ToString("dd/MM/yyyy");
-                                                    <td>งานออนไลน์ : เลขที่งาน-@oItem.order | วันที่ส่ง : @date | ราคา : @oItem.price | หมายเหตุ : @oItem.Remark</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>@oItem.Remark</td>
-                                                }
-                                                <td>@oItem.Name</td>
-                                                <td>@d</td>
-                                            </tr>
+
+
+                                <tr>
+                                    <td>@e</td>
+                                    @if (oItem.TypeID == "5")
+                                    {
+                                        string date = oItem.daterecive.Value.ToString("dd/MM/yyyy");
+                                        <td>งานออนไลน์ : เลขที่งาน-@oItem.order | วันที่ส่ง : @date | ราคา : @oItem.price | หมายเหตุ : @oItem.Remark</td>
+                                    }
+                                    else if (oItem.TypeID == "6")
+                                    {
+
+                                        string date = oItem.daterecive.Value.ToString("dd/MM/yyyy");
+                                        <td>งานไปรษณีย์ :| วันที่ส่ง : @date | ราคา : @oItem.price | น้ำหนัก : @oItem.size กก.| หมายเหตุ : @oItem.Remark</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@oItem.Remark</td>
+                                    }
+                                    <td>@oItem.Name</td>
+                                    <td>@d</td>
+                                </tr>
                                             }
                                         }
                                     }
