@@ -29,6 +29,7 @@ namespace GeoCodingTest.Controllers
         //DateTime date2020 = new DateTime(2020, 07, 01);
         DateTime date2020 = DateTime.ParseExact(ConfigurationManager.AppSettings["Date"], "yyyy-MM-dd", CultureInfo.InvariantCulture);
         DateTime timenow = DateTime.Now;
+
         /*private void LineNotify(string lineToken, string message)
         {
             try
@@ -52,7 +53,7 @@ namespace GeoCodingTest.Controllers
             }
         }
         */
-
+        /***********************************Module นี้ ไม่ได้ใช้ **************************/
         [HttpPost]
         public ActionResult getLocation(string location)
         {
@@ -134,13 +135,13 @@ namespace GeoCodingTest.Controllers
 
             return RedirectToAction("Index");
         }
-
+        /***********************************Module นี้ ไม่ได้ใช้ **************************/
         // GET: GeoCoding
         public ActionResult ViewTest()
         {
             return View();
         }
-
+        /***********************************Module นี้ ไม่ได้ใช้ **************************/
         public ActionResult Bill1()
         {
             if (Session["Name"] == null)
@@ -152,7 +153,7 @@ namespace GeoCodingTest.Controllers
             Session["TypeID"] = "1";
             return View(mwge);
         }
-
+        /***********************************Module นี้ ไม่ได้ใช้ **************************/
         [HttpPost]
         public ActionResult Bill1(int invoiceno, mWGE mData)
         {
@@ -216,7 +217,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        /***********************************Module นี้ ไม่ได้ใช้ **************************/
         public ActionResult Bill2()
         {
             if (Session["Name"] == null)
@@ -228,7 +229,7 @@ namespace GeoCodingTest.Controllers
             Session["TypeID"] = "2";
             return View(mwge);
         }
-
+        /***********************************Module นี้ ไม่ได้ใช้ **************************/
         [HttpPost]
         public ActionResult Bill2(int invoiceno, mWGE mData)
         {
@@ -292,7 +293,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        /******************************Module สำหรับงานรับส่งเอกสาร *******************************/
         public ActionResult Delivery()
         {
             if (Session["Name"] == null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "3" || Session["Department"].ToString() == "4" || Session["Department"].ToString() == "1"))
@@ -302,7 +303,7 @@ namespace GeoCodingTest.Controllers
 
             return View();
         }
-
+        /***********************บันทึกงานรับส่งเอกสาร ***************************/
         [HttpPost]
         public ActionResult getDelivery(string location, string Remark, string Bank)
         {
@@ -313,6 +314,7 @@ namespace GeoCodingTest.Controllers
 
             try
             {
+                /*รับค่า GPS จาก View โดยส่งค่าเป็น Ajax */
                 string[] location1 = location.Split(',');
                 string[] latitude1 = location1[0].Split(':');
                 string[] longitude1 = location1[1].Split(':');
@@ -320,7 +322,7 @@ namespace GeoCodingTest.Controllers
                 string code1 = location1[4];
                 string remark1 = Remark;
                 string typeid1 = location1[5];
-
+                /* เช็ค radioOption ว่าเลื่อกชนิดไหนมา ถ้าเลือกเข้าเช็ต จะเพิ่มรายละเอียดธนาคารเข้าไปใน remark */
                 if (Bank != "-" && typeid1 == "1")
                 {
                     remark1 = "ธนาคาร : " + Bank + " / " + remark1;
@@ -335,6 +337,7 @@ namespace GeoCodingTest.Controllers
                     dbs.Code = code1;
                     dbs.Remark = remark1;
                     dbs.TypeID = typeid1;
+                    /*TypeID ความหมมายแต่ละค่า 1="เข้าเช็ค" 2="ส่งไปรษณีย์" 3="ส่งเอกสาร" 4="อื่นๆ ระบุ" 5="งานออนไลน์" 6="งานไปรษณีย์"*/
                     dbs.Latitude = latitude1[1];
                     dbs.Longitude = longitude1[1];
                     dbs.SubmitDate = DateTime.Now;
@@ -357,6 +360,9 @@ namespace GeoCodingTest.Controllers
             return View();
             //return RedirectToAction("Index");
         }
+
+        /*งานออนไลน์ คืองานรับส่งพัสดุของลูกค้าที่สั่งของออนไลน์ผ่านเว็บ Winner&Co ทีม Bill จะเข้าไปรับของจากคลัง ไปส่งที่ไปรษณียย์*/
+        /* ***งานไปรษณีย์ในที่นี้จะเป็นงานย่อยที่ทีม Bill ไปส่งนอกรอบ จะไม่ใช่งานไปรษณีย์ที่ต้องนับรอบรายเดือน (เมนูงานไปรษณีย์) */
         public ActionResult Online()
         {
             if (Session["Name"] == null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "3" || Session["Department"].ToString() == "4" || Session["Department"].ToString() == "1"))
@@ -366,7 +372,7 @@ namespace GeoCodingTest.Controllers
 
             return View();
         }
-
+        /*สำหรับบันทึกงานออนไลน์ ใช้ Table เดียวกับ งานออนไลน์*/
         [HttpPost]
         public ActionResult getOnline(string location, string Remark, string ID,string radio1,float Price,float Weight)
         {
@@ -377,6 +383,7 @@ namespace GeoCodingTest.Controllers
 
             try
             {
+                /*รับค่า GPS จาก View โดยส่งค่าเป็น Ajax */
                 string[] location1 = location.Split(',');
                 string[] latitude1 = location1[0].Split(':');
                 string[] longitude1 = location1[1].Split(':');
@@ -387,6 +394,8 @@ namespace GeoCodingTest.Controllers
                 string choice = location1[5];
                 string id = ID;
                 float price;
+                /*แยกประเภทงาน ถ้าเลือกงานออนไลน์ radio1=5 จะกำหนดค่าขนาดกล่องและราคา ให้เองตายตัว*/
+                /*ถ้าเลือกงานไปรษณีย์ radio1=6 จะสามารถระบุขนาด กับ ราคาเองได้ */
                 if(radio1 == "5")
                 {
                     if (choice == "B")
@@ -428,6 +437,7 @@ namespace GeoCodingTest.Controllers
                     dbs.Code = code1;
                     dbs.Remark = remark1;
                     dbs.TypeID = typeid1;
+                    /*TypeID ความหมมายแต่ละค่า 1="เข้าเช็ค" 2="ส่งไปรษณีย์" 3="ส่งเอกสาร" 4="อื่นๆ ระบุ" 5="งานออนไลน์" 6="งานไปรษณีย์"*/
                     dbs.Latitude = latitude1[1];
                     dbs.Longitude = longitude1[1];
                     dbs.SubmitDate = DateTime.Now;
@@ -461,6 +471,8 @@ namespace GeoCodingTest.Controllers
             return View();
             //return RedirectToAction("Index");
         }
+
+        /* สำหรับดูข้อมูลงานออนไลน์ งานทั่วไป งานไปรษณีย์ */
         public ActionResult DeliveryFind()
         {
             if (Session["Name"] == null)
@@ -515,18 +527,7 @@ namespace GeoCodingTest.Controllers
             }
         }
 
-        public ActionResult Other()
-        {
-            if (Session["Name"] == null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "3" || Session["Department"].ToString() == "4" || Session["Department"].ToString() == "1"))
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            mWGE mwge = new mWGE();
-            Session["TypeID"] = "3";
-            return View(mwge);
-        }
-
+        /*แสดงรายการงานอืื่่นๆทั้งหมดในหน่า View OtherFind*/
         public ActionResult OtherFind()
         {
             if (Session["Name"] == null)
@@ -582,6 +583,19 @@ namespace GeoCodingTest.Controllers
             }
         }
 
+        /* หน้าสำหรับบันทึกงานอื่นๆ */
+        public ActionResult Other()
+        {
+            if (Session["Name"] == null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "3" || Session["Department"].ToString() == "4" || Session["Department"].ToString() == "1"))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            mWGE mwge = new mWGE();
+            Session["TypeID"] = "3";
+            return View(mwge);
+        }
+
         [HttpPost]
         public ActionResult Other(string cardcodeno, string cardname, mWGE mData)
         {
@@ -599,6 +613,17 @@ namespace GeoCodingTest.Controllers
 
                 using (var db = new DBS_WGE_Entities())
                 {
+                    /*select oinv.CardCode,oinv.CardName,oinv.Address,oinv.DocNum,oinv.DocDate 
+                        from oinv inner join oslp on oinv.SlpCode=oslp.SlpCode
+                        inner join ocrd on oinv.CardCode = ocrd.CardCode
+                        where (oinv.DocDate>='01/01/2020')  and (oinv.CardCode like '**ใส่รหัสลูกค่า***' or cardname like '***ใส่ชื่อลูกค่า***') and docnum not in (select invno from [@MCT_OTHER])
+			
+                        union all
+
+                      select orin.CardCode,ORIN.CardName,orin.Address,orin.DocNum,orin.DocDate from orin inner join oslp on orin.SlpCode = oslp.SlpCode
+                        inner join OCRD on ORIN.CardCode = ocrd.CardCode
+                        where (orin.DocDate>='01/01/2020') and (orin.CardCode like '**ใส่รหัสลูกค่า***' or cardname like '***ใส่ชื่อลูกค่า***')and docnum not in (select invno from [@MCT_OTHER])*/
+
                     var oData = (from a in db.OINV
                                  join b in db.OSLP on a.SlpCode equals b.SlpCode into bb
                                  from b in bb.DefaultIfEmpty()
@@ -657,7 +682,8 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        /*หน้าบันทึกรายการ งานอื่นๆ โดยส่งค่าเลข invno มาจาก หน้าother แล้วทำการค้นหาข้อมูลรายละเอียดต่างๆ(รหัสลูกค้า,ที่อยู่,เลขที่่บิล..... etc )เพื่อนำไปทำการบันทึกราย 
+         ใน getOther2 */
         public ActionResult Other2(int invno, mWGE mData)
         {
             if (Session["Name"] == null)
@@ -711,10 +737,7 @@ namespace GeoCodingTest.Controllers
 
                     allData = allData.Where(a => a.DocNum == invno);
 
-                    //if (!string.IsNullOrEmpty(mData.CardCode))
-                    //{
-
-                    //}
+                   
                     if (allData != null)
                     {
                         mData.ListOINV = allData.ToList();
@@ -729,6 +752,7 @@ namespace GeoCodingTest.Controllers
             return View(mData);
         }
 
+        /*สำหรับบันทึกขข้อมูล งานอื่นๆ ของทีมบิล */
         [HttpPost]
         public ActionResult getOther2(string location, DateTime DocDate1, DateTime DocDueDate1, string Remark)
         {
@@ -791,11 +815,10 @@ namespace GeoCodingTest.Controllers
                 log.WriteLog(string.Format("{0}({1}) : {2} {3}/{4}", Session["Name"].ToString(), Session["Code"].ToString(), "Error", System.Reflection.MethodBase.GetCurrentMethod().Name, ex.ToString()));
                 TempData["msg"] = "<script>alert('Error');</script>";
             }
-
             return RedirectToAction("Index");
-            //return View();
         }
 
+        /*หน้าค้นหางานวางใบ CN */
         public ActionResult CN()
         {
             if (Session["Name"] == null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "3" || Session["Department"].ToString() == "4" || Session["Department"].ToString() == "1"))
@@ -807,7 +830,7 @@ namespace GeoCodingTest.Controllers
             Session["TypeID"] = "4";
             return View(mwge);
         }
-
+        /*ค้นหาใบ CN โดยค้นหาจาก รหัสลูกค้า ชื่อ หรือเเลขที่บิล */
         [HttpPost]
         public ActionResult CN(string cardcodeno, string cardname, string cpcode, string cpname, string optionsRadios1, mWGE mData)
         {
@@ -843,6 +866,10 @@ namespace GeoCodingTest.Controllers
                 {
                     OCRD nData = db.OCRD.Where(o => o.CardName.Contains(cpname) && o.CardCode.StartsWith("c") && o.FatherCard != null).FirstOrDefault();
                     string cpcode1 = nData.FatherCard;
+
+                    /*select orin.CardCode,ORIN.CardName,orin.Address,orin.DocNum,orin.DocDate from orin inner join oslp on orin.SlpCode = oslp.SlpCode
+                        inner join OCRD on ORIN.CardCode = ocrd.CardCode
+                        where (orin.DocDate>='01/01/2020') and orin.CardCode='***รหัสลูกค้า***' */
 
                     var oData = (from e in db.ORIN
                                  join f in db.OSLP on e.SlpCode equals f.SlpCode into ff
@@ -893,7 +920,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        /*หน้ารายละเอียด **หลังจากกดหน้าที่กดเลขที่บิล จะ Redirect มาที่หน้านี้ โดยส่งค่า เลขที่บิลนั้นๆมาด้วย ** */
         public ActionResult CNInfo(int invno, mWGE mData)
         {
             if (Session["Name"] == null)
@@ -939,7 +966,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        /* หน้าแสดงรายการ วาง CN อยู่ในเมนู ค้นหาบิล เมนูย่อย CN */
         public ActionResult CNFind()
         {
             if (Session["Name"] == null)
@@ -992,7 +1019,7 @@ namespace GeoCodingTest.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
+        
         [HttpPost]
         public ActionResult CN1(string location)
         {
@@ -1019,10 +1046,7 @@ namespace GeoCodingTest.Controllers
                 {
                     invno1.Add(Convert.ToInt32(location1[i]));
                 }
-
-                //TempData["arr"] = invno1;
-
-                //mData.InvnoBilling = invno1;
+                
 
                 Session.Remove("arr");
                 Session["arr"] = invno1;
@@ -1033,9 +1057,8 @@ namespace GeoCodingTest.Controllers
             }
 
             return new EmptyResult();
-            //return View();
-            //return RedirectToAction("Billing2","GeoCoding");
         }
+
         public ActionResult CN2(mWGE mData)
         {
             if (Session["Name"] == null)
@@ -1044,7 +1067,6 @@ namespace GeoCodingTest.Controllers
             }
 
             var list = (List<int>)Session["arr"];
-            //List<int> list = (List<int>)TempData["arr"];
 
             try
             {
@@ -1083,8 +1105,8 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
-
+        
+        //สำหรับบันทึกรายละเอียดการวาง CN 
         [HttpPost]
         public ActionResult getCN(string location,DateTime? Dateback,string Remark)
         {
@@ -1112,7 +1134,7 @@ namespace GeoCodingTest.Controllers
                 }
 
                 var str = String.Join(",", invno1);
-                //int countinvno2 = invno1.Count();
+
                 mWGE mwge = new mWGE();
 
                 using (var db = new DBS_WGE_Entities())
@@ -1206,7 +1228,7 @@ namespace GeoCodingTest.Controllers
             return View();
         }
 
-
+        //ค้นหาใบวางบิลที่ทำรายการจาก Sap 
         public ActionResult Billing()
         {
             if (Session["Name"] == null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "3" || Session["Department"].ToString() == "4" || Session["Department"].ToString() == "1"))
@@ -1217,6 +1239,7 @@ namespace GeoCodingTest.Controllers
             return View();
         }
 
+        //ค้นหาใบวางบิลโดยใช้รหัสลูกค้า ขึ้นต้นด้วย C หรือ CP หรือค้นหาด้วยชื่อลูกค่า,เลขที่บิล
         [HttpPost]
         public ActionResult Billing(string cardcodeno, string cardname, string cpcode, string cpname, string optionsRadios1, mWGE mData)
         {
@@ -1253,6 +1276,14 @@ namespace GeoCodingTest.Controllers
                     OCRD nData = db.OCRD.Where(o => o.CardName.Contains(cpname) && o.CardCode.StartsWith("c") && o.FatherCard != null).FirstOrDefault();
                     string cpcode1 = nData.FatherCard;
 
+                    /*select oinv.CardCode,oinv.CardName,oinv.Address,oinv.docnum,oinv.DocDate,oinv.DocDueDate,oinv.DocTotal,oinv.FatherCard
+                        from oinv inner join oslp on oinv.SlpCode=oslp.SlpCode
+                        inner join ocrd on ocrd.CardCode=oinv.CardCode 
+                        where oinv.DocDate >= '01/01/2020' and 
+                        (oinv.cardcode like 'C1010264' or oinv.CardName like 'C1010264' or oinv.FatherCard like 'C1010264') 
+                        and DocNum not in (select invno from [@MCT_BILLING])*/
+
+                    
                     var oData = (from a in db.OINV
                                  join b in db.OSLP on a.SlpCode equals b.SlpCode into bb
                                  from b in bb.DefaultIfEmpty()
@@ -1304,7 +1335,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        //หน้าแสดงรายละเอียดบิล
         public ActionResult BillingInfo(int invno, mWGE mData)
         {
             if (Session["Name"] == null)
@@ -1350,7 +1381,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        //หน้าค้นหาการวางบิลทั้งหมด
         public ActionResult BillingFind()
         {
             if (Session["Name"] == null)
@@ -1407,7 +1438,7 @@ namespace GeoCodingTest.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
+        //
         [HttpPost]
         public ActionResult Billing1(string Location)
         {
@@ -1499,7 +1530,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        //สำหรับบันทึกการวางบิล จะอยู่ในหน้า Billing2 มีตัวเลือกให้เลือกแล้วส่งค่ามายัง module นี้เพื่อทำการบันทึกลงดาต้าเบสท์
         [HttpPost]
         public ActionResult getBilling(string location, DateTime? dateback, DateTime? ChequeDueDate, DateTime? ChequeDate, bool CheckBox, string Bank, string Remark, string TotalRev, DateTime? Receivedate, string Refno)
         {
@@ -1769,7 +1800,7 @@ namespace GeoCodingTest.Controllers
 
             return View();
         }
-
+        //หน้าเก็บเงิน
         public ActionResult Receive()
         {
             if (Session["Name"] == null && (Session["Position"].ToString() == "8" || Session["Department"].ToString() == "3" || Session["Department"].ToString() == "4" || Session["Department"].ToString() == "1"))
@@ -1815,7 +1846,21 @@ namespace GeoCodingTest.Controllers
                 {
                     OCRD nData = db.OCRD.Where(o => o.CardName.Contains(cpname) && o.CardCode.StartsWith("c") && o.FatherCard != null).FirstOrDefault();
                     string cpcode1 = nData.FatherCard;
-
+                    /*select   [@MCT_BILLING].CardCode,
+	                           [@MCT_BILLING].CardName,
+	                           oinv.Address,
+	                           [@MCT_BILLING].InvNo,
+	                           [@MCT_BILLING].DateBill,
+	                           [@MCT_BILLING].DueDateBill,
+	                           [@MCT_BILLING].Total,
+	                           [@MCT_BILLING].ID,
+	                           ocrd.fathercard,
+	                           [@MCT_BILLING].Refno
+	                           from oinv inner join oslp on oinv.SlpCode=oslp.SlpCode
+	                           inner  join ocrd on oinv.CardCode=ocrd.CardCode
+	                           inner join [@MCT_BILLING] on oinv.DocNum=[@MCT_BILLING].InvNo
+	                           where [@MCT_BILLING].Status ='1' and oinv.DocDate >= '01/01/2020' 
+	                           and (oinv.cardcode like 'C3011667' or oinv.CardName like 'C3011667' or oinv.FatherCard like 'C3011667') */
                     var oData = (from a in db.OINV
                                  join b in db.OSLP on a.SlpCode equals b.SlpCode into bb
                                  from b in bb.DefaultIfEmpty()
@@ -1868,7 +1913,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        /*แสดงรายละเอียเใบวางบิล*/
         public ActionResult ReceiveInfo(int invno, mWGE mData)
         {
             if (Session["Name"] == null)
@@ -1915,7 +1960,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+        /*แสดงรายดารทั้งหมดที่วางบิล*/
         public ActionResult ReceiveFind()
         {
             if (Session["Name"] == null)
@@ -2020,7 +2065,7 @@ namespace GeoCodingTest.Controllers
 
             return View(mData);
         }
-
+ 
         [HttpPost]
         public ActionResult Receive1(string location)
         {
@@ -2250,7 +2295,7 @@ namespace GeoCodingTest.Controllers
 
             return View();
         }
-
+        //เช็คเงื่อนไขการวางบิล
         public ActionResult ConditionBilling()
         {
             if (Session["Name"] == null)
@@ -2260,7 +2305,7 @@ namespace GeoCodingTest.Controllers
 
             return View();
         }
-
+        //ค้นหาเงื่อนไขการวางบิล โดยใส่รหัสลูกค้า
         [HttpPost]
         public ActionResult ConditionBilling(string cardcodeno, string cardname, mWGE mData)
         {
@@ -2341,7 +2386,12 @@ namespace GeoCodingTest.Controllers
             }
 
         }
-
+        //หน้าสำหรับงานทั่วไป คืองานที่ทาง User จะเปิดเข้ามาในระบบ แล้วทางทีม บิล จะเข้าไปรับงาน โดยลักษณะงานจะมีหลายยประเภท ยกตัวอย่างเช่น
+        //งานส่งเอกสาร งานรับเอกสาร ขึ้นเช็ค ไปธนาคาร
+        //โดยงานส่วนนี้จะสามารถแนบเอกสารเป็น pdf หรือ รูุปภาพได้
+        //สำหรัยหน้านี้ จะแบ่งการทำงานเป็น 2 ส่วนคือ 1.สำหรับบันทึกข้อมูล 2.สำหรับแก้ไข/แสดงข้อมูล
+        //โดยจะแบ่งการทำงานเไว้ที่ Front-End ในกรณีที่ส่งค่ามายังหลังบ้านแล้ว ทำการค้นหาแล้วไม่เจอข้อมูล ก็จะส่งค่ากลับไปเป็น null แล้วเมื่อ front-end ได้รับค่าแล้วจะทำการเช็ตเงื่อนไข ก่อนนำไปแสดงผล
+        
         public ActionResult WorkOrder(string id,string postel)
         {
             if (Session["Name"] == null)
@@ -2401,7 +2451,7 @@ namespace GeoCodingTest.Controllers
                         {
                             mData.ListOUDP = oData2;
                         }
-
+                        //สำหรับเช็คว่าทีมบิลคนไหน เข้ามาดูรายการเพื่อรับงานแล้วบ้าง
                         var checkview = (from a in db.C_MCT_BILL_WORKORDER
                                         where a.ID ==x select a ).FirstOrDefault();
 
@@ -2462,6 +2512,15 @@ namespace GeoCodingTest.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+        //โมลดูล getWorkOrder จะใช้ร่วมกันกับ งานทั่วไป และ งานไปรษณีย์ โดยจะแยกจาก type ของงานที่ถูกส่งมากจาก View 
+        //Type = P คืองานไปรษณีบ์ที่ถูกเปิดมาจาก User 
+        //Type = U คืองานทั่วไป ที่ทาง Admin บันทึกข้อมูลเพิ่ให้ทีม บิล สามารถเข้ามารับงานได้ U = งานไปรษณีย์ลงทะเบียน
+        //Type = E คืองานทั่วไป ที่ทาง Admin บันทึกข้อมูลเพิ่ให้ทีม บิล สามารถเข้ามารับงานได้ E = งานไปรษณีย์EMS
+        //Type = G คืองานทั่วไป ที่ทาง Admin บันทึกข้อมูลเพิ่ให้ทีม บิล สามารถเข้ามารับงานได้ G = งานไปรษณีย์ธรรมดา
+        //Type = S คืองานทั่วไป ส่งเอกสาร
+        //Type = B คืองานทั่วไป เกี่ยวกับธนาคาร
+        //Type = R คืองานทั่วไป รับเอกสาร
+        //Type = O คืองานทั่วไป อื่นๆ
         public ActionResult getWorkOrder(mWGE data, HttpPostedFileBase file)
         {
             if (Session["Name"] == null)
@@ -2525,6 +2584,10 @@ namespace GeoCodingTest.Controllers
                         data_billworkorder.Type_Work = data.BW.Type_Work;
                         data_billworkorder.Remark = data.BW.Remark;
                         data_billworkorder.Status = "W";
+                        //เช็คในกรณีที่ค่าถูกส่งมาจากหน้า WorkOrderPostel หรือหน้างานไปรษณีย์ ว่าเลือกแผนกอะไรมา
+                        //กรณีนี้ ถ้าเป็น User ทั่วไปจะดึงค่ามาจาก Session ที่ทำการบันทึกไว้ตั้งแต่ login เข้าระบบแล้ว 
+                        //แต่เนื่องจาก User บางคนใช้งานระบบไม่เป็น จึงได้ทำการฝาก Admin บันทึกในระบบให้ เลยทำให้ต้องเพิ่มส่วนนี้
+                        //ในกรณีที่ Admin บันทึกเอง จะสามารถเลือกแผนกที่ต้องการบันทึกได้ สำหรับงานไปรษณีย์เท่านั้น
                         if( data.BW.Type_Work =="P")
                         {
                             if (data.BW.jobtitle == "Food Industry")
@@ -2633,6 +2696,7 @@ namespace GeoCodingTest.Controllers
                             data_billworkorder.Commander_Department = data.BW.Commander_Department;
                             data_billworkorder.Commander_JobTitle = data.BW.jobtitle;
                         }
+                        // สำหรับเช็คค่า Save path รูปภาพ และเก็บไว้ที่ path ของโปรเจค 
                         if (file != null)
                         {
                             string filetype = file.FileName;
@@ -2652,7 +2716,7 @@ namespace GeoCodingTest.Controllers
                         db.C_MCT_BILL_WORKORDER.Add(data_billworkorder);
                         db.SaveChanges();
 
-
+                        //บันทึกรายละเอียดงานทั่วไป
                         if (data.BW.Type_Work == "S" || data.BW.Type_Work == "R" || data.BW.Type_Work == "O")
                         {
                             data_billgeneral.WorkOrder_ID = ID;
@@ -2680,6 +2744,7 @@ namespace GeoCodingTest.Controllers
                             db.C_MCT_BILL_BANK.Add(data_billbank);
                             db.SaveChanges();
                         }
+                        //บันทึกรายละเอียดงานไปรษณีย์
                         else if (data.BW.Type_Work == "P")
                         {
                             foreach (var item in data.BP)
@@ -2741,7 +2806,7 @@ namespace GeoCodingTest.Controllers
                             var oData = (from a in db.C_MCT_BILL_WORKORDER
                                          where a.WorkOrder_ID == workid
                                          select a).FirstOrDefault();
-
+                            
                             oData.Status = "F";
                             oData.Recipient_Code = Session["Code"].ToString();
                             oData.Recipient_Name = Session["Name"].ToString();
@@ -4786,7 +4851,6 @@ namespace GeoCodingTest.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
       
         public ActionResult PostelAdmin()
         {
@@ -4819,7 +4883,6 @@ namespace GeoCodingTest.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
 
         [HttpPost]
         public ActionResult PostelAdmin(mWGE Data,DateTime datefrom, DateTime dateto, string checkbox, string button1,int round)
@@ -5245,7 +5308,6 @@ namespace GeoCodingTest.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
 
         [HttpPost]
         public ActionResult PostelAdminPrice(mWGE Data,int checkround,string checkbox,string button1)
@@ -5690,8 +5752,8 @@ namespace GeoCodingTest.Controllers
                                     SmtpClient smtp = new SmtpClient();
                                     smtp.UseDefaultCredentials = false;
                                     smtp.Credentials = new System.Net.NetworkCredential("info@winnergroup.co.th", "A123456a");
-                                    smtp.Port = 587; // You can use Port 25 if 587 is blocked (mine is!)
-                                    smtp.Host = "smtp.office365.com";
+                                    smtp.Port = 25; // You can use Port 25 if 587 is blocked (mine is!)
+                                    smtp.Host = "winnergroup-co-th.mail.protection.outlook.com";
                                     smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                                     smtp.EnableSsl = true;
                                     using (var mess = new MailMessage(senderEmail, receiverEmail)

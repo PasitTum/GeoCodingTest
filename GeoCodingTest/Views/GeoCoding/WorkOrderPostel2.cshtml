@@ -278,7 +278,7 @@
                                                             <img src="https://www.img.in.th/images/71b99e23a03304dba0df238d7318cfbe.png" alt="71b99e23a03304dba0df238d7318cfbe.png" border="0" />
                                                         </button>
                                                     </td>
-                                                    <td >
+                                                    <td>
                                                         <input type="text" style="text-align:center" id="" class="form-control" disabled value="@Model.dev[i]" maxlength="20">
                                                     </td>
                                                 </tr>
@@ -532,13 +532,19 @@
                                 }
                                 if (Model.ListBW2[0].Status != "F" && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10"))
                                 {
-
-
-
                                     <div style="display:block" id="acceptjob" class="pull-right">
                                         <div class="col-sm-12 col-md-12">
                                             <input hidden type="text" name="BW.Status" value="F" />
                                             <button type="submit" class="btn btn-info" name="BW.button" value="roundoff" onclick="return confirm('ยืนยันการรับงาน ?')" role="button">ปิดรอบ</button>
+                                        </div>
+                                    </div>
+                                }
+                                else if (Model.ListBW2[0].Status == "F"  && (Session["Position"].ToString() == "8" || Session["Position"].ToString() == "10"))
+                                {
+                                    <div style="display:block" id="acceptjob" class="pull-right">
+                                        <div class="col-sm-12 col-md-12">
+                                            <input hidden type="text" name="BW.Status" value="W" />
+                                            <button type="submit" class="btn btn-danger" name="BW.button" value="roundoff" onclick="return confirm('ยืนยันการรับงาน ?')" role="button">ยกเลิกปิดรอบ</button>
                                         </div>
                                     </div>
                                 }

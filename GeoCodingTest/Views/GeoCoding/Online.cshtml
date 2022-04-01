@@ -37,7 +37,7 @@
             var r = confirm(message1);
 
             if (r == true) {
-                    if (name != "" && checkbox != null && weight != 0 && price != 0) {
+                    if (name != "" && checkbox != null && price != 0) {
                         if (navigator.geolocation) {
                             navigator.geolocation.getCurrentPosition(showPosition, showError);
                         }
@@ -179,7 +179,7 @@
                     <div style="display:none;" id="Type6">
                         <div>
                             <label>ระบุน้ำหนัก:</label>
-                            <input type="number" style="text-align:right;" name="radio4" value="0" id="radio4" />
+                            <input type="text" style="text-align:right;" name="radio4" value="" id="radio4" />
                         </div>
                         <div>
                             <label>ระบุราคา:</label>
